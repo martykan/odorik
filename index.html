@@ -1,0 +1,674 @@
+<!DOCTYPE html5>
+<html>
+  <head>
+  	<script>
+	// NASTAVENÍ //
+
+	// API uživatelské jméno a heslo :: automatické přihlášení //
+	var APIuser = "";
+    var APIpass = "";
+
+	// Zamknutá čísla :: čárkou oddělený seznam zkratek (klapek), které nejde editovat //
+	// př. var lockedNumbers = "1,7" // zakáže čísla 1 a 7
+	var lockedNumbers = ""
+
+	// Skrytí zamknutých čísel :: true = nezobrazovat vůbec, false = zobrazit, ale zakázat úpravy //
+	// př. var hideLockedNumbers = true // nezobrazí vůbec 
+	var hideLockedNumbers = true;
+	
+	// Povolit přidávání nových čísel :: true = povolit, false = zakázat //
+	// př. var enableAdding = false // zakáže přidávání
+	var enableAdding = true;
+	
+	// Povolit upravování nových čísel :: true = povolit, false = zakázat //
+	// př. var enableEditing = true // povolí úpravy
+	var enableEditing = true;
+	
+	// Povolit mazání nových čísel :: true = povolit, false = zakázat //
+	// př. var enableRemoving = false // zakáže mazání
+	var enableRemoving = true;
+	
+	// Povolit callback :: true = povolit, false = zakázat //
+	// př. var enableCallback = false // zakáže callback
+	var enableCallback = true;
+
+    // Povolit políčko rychlého callbacku :: true = povolit, false = zakázat //
+	// př. var enableQuickCallback = false // zakáže políčko callbacku
+	var enableQuickCallback = true;
+	
+	// Povolit odhlašovaní uživatele :: true = povolit, false = zakázat //
+	// př. var enableLogout = false // zakáže odhlašování
+	var enableLogout = true;
+
+    // Přednastavené číslo pro callback //
+	// př. var defaultCallbackNumber = "0085023815827"; // nastaví výchozí číslo pro callback na 0085023815827
+	var defaultCallbackNumber = "";
+
+	// KONEC NASTAVENÍ //
+	// Pokud chcete upravit nějaké názvy, můžete v HTML kódu níže.
+	</script>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Odorik: Rychlé kontakty</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.1.4/components/button.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.1.4/components/container.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.1.4/components/dimmer.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.1.4/components/dropdown.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.1.4/components/form.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.1.4/components/grid.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.1.4/components/header.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.1.4/components/icon.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.1.4/components/input.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.1.4/components/label.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.1.4/components/loader.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.1.4/components/message.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.1.4/components/menu.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.1.4/components/modal.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.1.4/components/reset.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.1.4/components/segment.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.1.4/components/site.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.1.4/components/table.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.1.4/components/transition.min.css">
+  </head>
+  <body>
+    <div id="warningIE" style="padding-top: 10%; background: white; width: 100%; height: 100%; position: absolute; top: 0; left: 0; z-index: 10; padding: 15px; text-align: center">
+        <p>Používáte zastaralý prohlížeč. Nainstalujte si Google Chrome nebo Mozillu Firefox.</p>
+    </div>
+    <div class="ui container" style="display: none;">
+     <!-- TITLE -->
+     <h1 class="ui header">
+     	<br>Odorik.cz
+     	<div class="sub header">Rychlé kontakty <div class="ui orange label">BETA 1.3</div></div>
+     </h1>
+     <script>
+      if(enableAdding && enableLogout && enableQuickCallback){
+            document.write('<div class="ui secondary menu">');
+      }      
+      if(enableAdding){
+			document.write('<div class="item fitted"><button class="ui green button" onclick="addContact();"><i class="plus icon"></i> Přidat</button></div>');
+      }
+	  if(enableLogout){
+	    	document.write('<div class="item fitted"><button class="ui button" onclick="logoutModal();"><i class="sign out icon"></i> Odhlásit</button></div>');
+      }
+      if(enableQuickCallback){
+	    	document.write('<div class="right item fitted"><div class="ui action input"><input type="text" name="quick-input" placeholder="Volané číslo"><button id="quick-button" class="ui button"><i class="call icon"></i> Callback</button></div></div>');
+      }    
+      if(enableAdding && enableLogout && enableQuickCallback){
+            document.write('</div>');
+      }       
+      </script>     
+      
+     <!-- TABLE -->
+	 <table class="ui celled compact table" id="tableWrapper">
+	  <thead><tr>
+		<th>Zkratka</th>
+		<th>Název</th>
+		<th>Číslo</th>
+		<th class="one wide"></th>
+	  </tr></thead>
+	  <tbody id="table">
+
+	  </tbody>
+	 </table>
+    </div>
+    <!-- DELETE MODAL -->
+    <div class="ui modal" id="deleteModal">
+	  <i class="close icon"></i>
+	  <div class="header">
+		Smazat kontakt
+	  </div>
+	  <div class="content">
+		<div class="description">
+		  <p>Opravdu chcete smazat tento rychlý kontakt?</p>
+		</div>
+	  </div>
+	  <div class="actions">
+		<div class="ui black deny button">
+		  Ne
+		</div>
+		<div class="ui positive right labeled icon button">
+		  Smazat
+		  <i class="trash icon"></i>
+		</div>
+	  </div>
+	</div>
+	<!-- EDIT MODAL -->
+	<div class="ui modal" id="editModal">
+	  <i class="close icon"></i>
+	  <div class="header">
+		Upravit kontakt
+	  </div>
+	  <div class="content">
+		<form class="ui form">
+		  <div class="field">
+			<label>Zkratka</label>
+			<input type="text" name="edit-shortcut">
+		  </div>
+		  <div class="field">
+			<label>Název</label>
+			<input type="text" name="edit-name">
+		  </div>
+		  <div class="field">
+			<label>Číslo</label>
+			<input type="text" name="edit-number">
+		  </div>
+		</form>
+	  </div>
+	  <div class="actions">
+		<div class="ui black deny button">
+		  Zrušit
+		</div>
+		<div class="ui positive right labeled icon button">
+		  Upravit
+		  <i class="checkmark icon"></i>
+		</div>
+	  </div>
+	</div>
+	<!-- ADD MODAL -->
+	<div class="ui modal" id="addModal">
+	  <i class="close icon"></i>
+	  <div class="header">
+		Přidat kontakt
+	  </div>
+	  <div class="content">
+		<form class="ui form">
+		  <div class="field">
+			<label>Zkratka</label>
+			<input type="text" name="add-shortcut" placeholder="Zkratka">
+		  </div>
+		  <div class="field">
+			<label>Název</label>
+			<input type="text" name="add-name" placeholder="Název">
+		  </div>
+		  <div class="field">
+			<label>Číslo</label>
+			<input type="text" name="add-number" placeholder="Číslo">
+		  </div>
+		</form>
+	  </div>
+	  <div class="actions">
+		<div class="ui black deny button">
+		  Zrušit
+		</div>
+		<div class="ui positive right labeled icon button">
+		  Přidat
+		  <i class="checkmark icon"></i>
+		</div>
+	  </div>
+	</div>
+	<!-- LOGOUT MODAL -->
+    <div class="ui modal" id="logoutModal">
+	  <i class="close icon"></i>
+	  <div class="header">
+		Odhlášení
+	  </div>
+	  <div class="content">
+		<div class="description">
+		  <p>Opravdu se chcete odhlásit? Budete muset znovu zadat API jméno a heslo.</p>
+		</div>
+	  </div>
+	  <div class="actions">
+		<div class="ui black deny button">
+		  Zrušit
+		</div>
+		<div class="ui positive right labeled icon button">
+		  Odhlásit
+		  <i class="sign out icon"></i>
+		</div>
+	  </div>
+	</div>
+	<!-- LOGIN MODAL -->
+    <div class="ui small modal" id="loginModal">
+	  <div class="header">
+		Přihlášení
+	  </div>
+	  <div class="content">
+		<form class="ui form">
+		  <div class="field">
+			<label>API uživatelské jméno</label>
+			<input type="text" name="login-name">
+		  </div>
+		  <div class="field">
+			<label>API heslo</label>
+			<input type="password" name="login-pass">
+		  </div>
+		</form>
+		<div class="ui negative message" id="badLogin" style="display: none;">
+ 			<div class="header">Nesprávné uživatelské jméno nebo heslo.</div>
+ 			Tyto údaje najdetev nastavení účtu, v sekci API heslo.
+  		</div>
+	  </div>
+	  <div class="actions">
+		<div class="ui positive right labeled icon button">
+		  Přihlásit se
+		  <i class="sign in icon"></i>
+		</div>
+	  </div>
+	</div>
+	<!-- CALL MODAL -->
+	<div class="ui modal" id="callModal">
+	  <i class="close icon"></i>
+	  <div class="header">
+		Objednat callback
+	  </div>
+	  <div class="content">
+		<form class="ui form">
+            <div class="field">
+			<label>Volané číslo</label>
+			<input type="text" name="call-target" disabled>
+		  </div>
+		  <div class="field">
+			<label>Vaše číslo</label>
+            <div class="ui input">
+			    <input type="text" name="call-number" placeholder="Číslo">
+                <!--<div class="ui button" onclick=""><i class="user icon"></i>Kontakty</div>-->
+            </div>
+		  </div>
+		</form>
+	  </div>
+	  <div class="actions">
+		<div class="ui black deny button">
+		  Zrušit
+		</div>
+		<div class="ui positive right labeled icon button">
+		  Volat
+		  <i class="checkmark icon"></i>
+		</div>
+	  </div>
+	</div>
+	<!-- DIMMERS -->
+	<div class="ui page dimmer">
+	  <div class="content">
+		 <h1 class="ui inverted icon header">
+          <i class="checkmark icon"></i>
+          <small></small>
+         </h1>
+	  </div>
+	</div>
+    <!-- SCRIPTS -->
+    <script src="https://code.jquery.com/jquery-1.11.3.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.1.4/semantic.min.js"></script>
+    <script>
+    	// Disable caching of AJAX responses (so the data is properly updated)
+		$.ajaxSetup ({
+			cache: false
+		});
+		
+		// Initialize helper variables
+		var number;
+		var array;
+
+    	// Is user logged in?
+    	if(loggedIn()){
+			init(); // Load page
+		}
+		else {
+			logInDialog(); // Show login dialog
+		}
+		
+		// Detect if user is logged in 
+		function loggedIn(){
+			// Is the data in localStorage?
+			if(localStorage.getItem('username') !== null && localStorage.getItem('password') !== null || (APIuser != "" && APIpass != "") ){ 
+				if(localStorage.getItem('username') !== null && localStorage.getItem('password') !== null){
+					APIuser = localStorage.getItem('username');
+					APIpass = localStorage.getItem('password');
+				}
+					
+				// Is the data valid?			
+				$.ajax({
+				url: 'https://www.odorik.cz/api/v1/lines',
+				type: 'GET',
+				data: { user: APIuser, password: APIpass },
+				success: function(result) {
+					// Check if there are any errors
+					if(result.indexOf("error") == -1){
+						// No errors
+					}
+					else {
+						// Logout and try again
+						logout();
+					}
+				  }
+				});
+				return true;	
+			}
+			else {
+				return false;
+			}
+		}
+		
+		// Show login dialog
+		function logInDialog(){
+			// Initialitze helper variable
+			badlogin = false; 
+			// Show the dialog
+			$('#loginModal').modal({
+			closable: false,
+			blurring: true,
+			onApprove : function() {
+				// Animate button
+				$("#loginModal .button").addClass("loading");
+				
+				// Get values from fields
+				APIuser = $('input[name="login-name"]').val();
+				APIpass = $('input[name="login-pass"]').val();
+				
+				// Connect to API
+				$.ajax({
+				url: 'https://www.odorik.cz/api/v1/lines',
+				type: 'GET',
+				data: { user: APIuser, password: APIpass },
+				success: function(result) {
+					// Stop button animation
+					$("#loginModal .button").removeClass("loading");
+					// Check if there are any errors
+					if(result.indexOf("error") == 0){
+						// Show error animations
+						$("#loginModal").transition('shake');
+						if(badlogin)
+							$('#badLogin').transition("pulse");
+						else {
+							$('#badLogin').transition("fade");
+							badlogin = true;
+						}
+					}
+					else {
+						// Hide and log in
+						$('#loginModal').modal('hide');
+						init();
+						
+						localStorage.setItem('username', APIuser);
+						localStorage.setItem('password', APIpass);
+					}
+				}});
+				
+				return false;
+			}
+		  }).modal('show');
+		}
+		
+		// Log out the user
+		function logoutModal(){
+			$('#logoutModal').modal({blurring: true,
+			onApprove : function() {
+			  logout();
+			}
+		  }).modal('show');
+		}
+		
+		// Log out the user
+		function logout(){
+			localStorage.removeItem('username');
+			localStorage.removeItem('password');
+				  
+			location.reload();
+		}
+		
+		// Initialization
+		function init(){
+			$("input[name=call-number]").val(defaultCallbackNumber);
+		
+			// Initialize speed dials
+			reload();
+		}
+		
+		// Remove Contact
+		function removeContact(line, id){
+			$('#deleteModal').modal({
+			blurring: true,
+			onApprove : function() {
+			  if(line == "main"){
+				requestURL = 'https://www.odorik.cz/api/v1/speed_dials/'+id+'.json';
+			  }
+			  else {
+				requestURL = "https://www.odorik.cz/api/v1/lines/"+line+'/speed_dials/'+id+'.json';
+			  }
+			  $.ajax({
+				url: requestURL,
+				type: 'DELETE',
+				data: { user: APIuser, password: APIpass },
+				success: function(result) {
+					if(typeof result.errors != "undefined"){
+                        parseErrors(result);
+                    }
+                    setTimeout("reload();", 500);
+				}
+			  });
+			}
+		  }).modal('show');
+		}
+		
+		// Edit Contact
+		function editContact(line, id, name, number){
+			$('input[name="edit-shortcut"]').val(id);
+			$('input[name="edit-name"]').val(name);
+			$('input[name="edit-number"]').val(number);
+			$('#editModal').modal({
+			blurring: true,
+			onApprove : function() {
+			  if(line == "main"){
+				  requestURL = 'https://www.odorik.cz/api/v1/speed_dials/'+id+'.json';
+			  }
+			  else {
+				  requestURL = "https://www.odorik.cz/api/v1/lines/"+line+'/speed_dials/'+id+'.json';
+			  }
+			  $.ajax({
+				url: requestURL,
+				type: 'PUT',
+				data: { user: APIuser, password: APIpass, 
+						shortcut: $('input[name="edit-shortcut"]').val(), 
+						name: $('input[name="edit-name"]').val(), 
+						number: $('input[name="edit-number"]').val() 
+					  },
+				success: function(result) {
+					if(typeof result.errors != "undefined"){
+                        parseErrors(result);
+                    }
+                    setTimeout("reload();", 500);
+				}
+			  });
+			}
+		  }).modal('show');
+		}
+		
+		// Add Contact
+		function addContact(){
+			$('#addModal').modal({
+			blurring: true,
+			onApprove : function() {
+			  line = $('select[name="add-line"]').val();
+			  if(line == "main"){
+				  requestURL = 'https://www.odorik.cz/api/v1/speed_dials.json';
+			  }
+			  else {
+				  requestURL = "https://www.odorik.cz/api/v1/lines/"+line+'/speed_dials.json';
+			  }
+			  $.ajax({
+				url: requestURL,
+				type: 'POST',
+				data: { user: APIuser, password: APIpass, 
+						shortcut: $('input[name="add-shortcut"]').val(), 
+						name: $('input[name="add-name"]').val(), 
+						number: $('input[name="add-number"]').val() 
+					  },
+				success: function(result) {
+                    if(typeof result.errors != "undefined"){
+                        parseErrors(result);
+                    }
+                    setTimeout("reload();", 500);
+				}
+			  });
+			}
+		  }).modal('show');
+		}
+		
+		// Parse errors
+		function parseErrors(resp){
+			var error = resp.errors[0];
+			if(error.indexOf("unauthorized") >= 0){
+        		showError("Nejste autorizováni k provedení této operace.");
+        	}
+    		if(error.indexOf("invalid_number") >= 0){
+        		showError("Neplatné číslo.");
+        	}
+        	if(error.indexOf("invalid_shortcut") >= 0){
+        		showError("Neplatná zkratka.");
+        	}
+        	if(error.indexOf("name_too_long") >= 0){
+        		showError("Název je příliš dlouhý.");
+        	}
+        	if(error.indexOf("shortcut_already_used") >= 0){
+        		showError("Zkratka je už použitá.");
+        	}
+        	if(error.indexOf("speed_dials_full") >= 0){
+        		showError("Rychlé kontakty jsou už plné.");
+        	}			
+		}
+		
+		// Display errors
+		function showError(message){
+			dim(false, message);
+		}
+		
+		// Detect uneditable lines
+		function editableLine(line, number){
+			return $.inArray(number + "", lockedNumbers.split(",")) == -1;
+		}
+		
+		// Reload list
+		function reload(){
+			$.ajax({
+				url: 'https://www.odorik.cz/api/v1/speed_dials.json',
+				type: 'GET',
+				data: { user: APIuser, password: APIpass },
+				success: function(result) {
+					array = result;
+					outstring = "";
+					for (var i = 0; i < result.length; i++) {
+						if(editableLine("main", result[i].shortcut)){
+							outstring += '<tr><td>'+result[i].shortcut+'</td>'
+										  +'<td>'+result[i].name+'</td><td>'+result[i].number+'</td><td>';
+							
+							if(enableEditing || enableRemoving || enableCallback)
+							outstring += '<div class="ui icon buttons">';
+							
+							if(enableRemoving)
+							outstring += '<button class="ui red button" onclick="removeContact(\'main\', \''
+										  	  + result[i].shortcut
+										  	  + '\')"><i class="delete icon"></i></button>';
+										  	  
+							if(enableEditing)
+							outstring += '<button class="ui blue button" onclick="editContact(\'main\', \''
+										  	  + result[i].shortcut+'\',\''
+										  	  + result[i].name+'\',\''
+										  	  + result[i].number
+										  	  + '\')"><i class="edit icon"></i></button>';
+										  	  
+							if(enableCallback)	 
+							outstring += '<button class="ui green button" onclick="callBack(\''
+										  	  + result[i].number+'\',\''
+                                              + result[i].shortcut+'\',\''
+                                              + result[i].name
+										  	  + '\')"><i class="call icon"></i></button>';
+										  	  
+							if(enableEditing || enableRemoving || enableCallback)	  	  
+							outstring += '</div>'
+							
+							outstring += '</td></tr>';
+						}
+						else {
+							if(hideLockedNumbers == false){
+								outstring += '<tr><td>'+result[i].shortcut+'</td>'
+											  +'<td>'+result[i].name+'</td><td>'+result[i].number+'</td><td>';
+								outstring += '<div class="ui icon buttons">'
+											  	  + '<button class="ui red button" disabled><i class="delete icon"></i></button>'
+											  	  + '<button class="ui blue button" disabled><i class="edit icon"></i></button>'
+											  	  + '<button class="ui green button" disabled><i class="call icon"></i></button></div>';
+								outstring += '</td></tr>';
+							}
+						}
+						
+					}
+					$("#table").html(outstring);
+					if($(".ui.container").css("display") == "none"){
+						$(".ui.container").transition("fade");
+					}
+				}
+			});  
+		}
+		
+		// Call back
+		function callBack(number, shortcut, name){
+            if(typeof shortcut !== "undefined"){
+                $('input[name="call-target"]').val(number + " - zk. " + shortcut +  " (" + name + ")");
+            }
+            else {
+                $('input[name="call-target"]').val(number);
+            }
+
+			$('#callModal').modal({
+			blurring: true,
+			onApprove : function() {
+			  line = $('select[name="call-line"]').val();
+			  requestURL = 'https://www.odorik.cz/api/v1/callback';
+			  
+			  $.ajax({
+				url: requestURL,
+				type: 'POST',
+				data: { user: APIuser, password: APIpass, 
+						caller: $('input[name="call-number"]').val(), 
+						recipient: number,
+						line: line
+					  },
+				success: function(result) {
+                    if(result.indexOf("error") != 0){
+                        dim(true, "Callback obědnán");
+                    }
+                    else {
+                    	dim(false, "Došlo k chybě. Zkontrolujte zadané číslo.");
+                    }
+				}
+			  });
+			}
+		  }).modal('show');
+		}
+
+        // Quick Callback input box
+        $("input[name=quick-input]").keypress(function(e) {
+            if(e.which == 13) {
+                callBack($("input[name=quick-input]").val());
+            }
+        });
+        $("#quick-button").click(function(event) {
+             callBack($("input[name=quick-input]").val());
+        });
+		
+		// Shows "dimmer" element - for displaying error messages
+		function dim(status, text){
+			if(status == true){
+				$('.page.dimmer h1 i').removeClass("warning");
+				$('.page.dimmer h1 i').removeClass("sign");
+				$('.page.dimmer h1 i').removeClass("checkmark");
+				$('.page.dimmer h1 i').addClass("checkmark");
+			}
+			else {
+				$('.page.dimmer h1 i').removeClass("warning");
+				$('.page.dimmer h1 i').removeClass("sign");
+				$('.page.dimmer h1 i').removeClass("checkmark");
+				$('.page.dimmer h1 i').addClass("warning");
+				$('.page.dimmer h1 i').addClass("sign");
+			}
+			$('.page.dimmer small').html(text);
+			setTimeout("$('.page.dimmer').dimmer('show');", 800)
+			setTimeout("$('.page.dimmer').dimmer('hide');", 2100);
+		}
+
+        // Incompatible browser warning
+        if(window.navigator.userAgent.indexOf("MSIE") == -1){
+            document.write("<style type='text/css'>#warningIE {display:none;}</style>");
+            $("#warningIE").hide();
+        }
+    </script>
+  </body>
+</html>
