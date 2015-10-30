@@ -672,6 +672,14 @@
             document.write("<style type='text/css'>#warningIE {display:none;}</style>");
             $("#warningIE").hide();
         }
+        
+        // Submit modals with ENTER key
+        $(".modal input").keypress(function(e) {
+            if(e.which == 13) {
+		var parentModal = $(e.target).parent().parent().parent().parent().attr("id"); // Yes, its ugly - but it works.
+		$("#"+parentModal+" .button.positive").click();
+            }
+        });
     </script>
   </body>
 </html>
