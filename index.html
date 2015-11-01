@@ -6,7 +6,7 @@
 
 	// API uživatelské jméno a heslo :: automatické přihlášení //
 	var APIuser = "";
-	var APIpass = "";
+    var APIpass = "";
 
 	// Zamknutá čísla :: čárkou oddělený seznam zkratek (klapek), které nejde editovat //
 	// př. var lockedNumbers = "1,7" // zakáže čísla 1 a 7
@@ -32,7 +32,7 @@
 	// př. var enableCallback = false // zakáže callback
 	var enableCallback = true;
 
-	// Povolit políčko rychlého callbacku :: true = povolit, false = zakázat //
+    // Povolit políčko rychlého callbacku :: true = povolit, false = zakázat //
 	// př. var enableQuickCallback = false // zakáže políčko callbacku
 	var enableQuickCallback = true;
 	
@@ -40,7 +40,15 @@
 	// př. var enableLogout = false // zakáže odhlašování
 	var enableLogout = true;
 
-    	// Přednastavené číslo pro callback //
+	// Povolit import/export :: true = povolit, false = zakázat //
+	// př. var enableLogout = false // zakáže import/export
+	var enableImportExport = true;
+
+	// Povolit animace :: true = povolit, false = zakázat //
+	// př. var enableAnimations = false // zakáže animace
+	var enableAnimations = true;
+
+    // Přednastavené číslo pro callback //
 	// př. var defaultCallbackNumber = "0085023815827"; // nastaví výchozí číslo pro callback na 0085023815827
 	var defaultCallbackNumber = "";
 
@@ -52,24 +60,24 @@
     <title>Odorik: Rychlé kontakty</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.1.4/components/button.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.1.4/components/container.min.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.1.4/components/dimmer.min.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.1.4/components/dropdown.min.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.1.4/components/form.min.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.1.4/components/grid.min.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.1.4/components/header.min.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.1.4/components/icon.min.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.1.4/components/input.min.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.1.4/components/label.min.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.1.4/components/loader.min.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.1.4/components/message.min.css">
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.1.4/components/dimmer.min.css">
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.1.4/components/dropdown.min.css">
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.1.4/components/form.min.css">
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.1.4/components/grid.min.css">
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.1.4/components/header.min.css">
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.1.4/components/icon.min.css">
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.1.4/components/input.min.css">
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.1.4/components/label.min.css">
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.1.4/components/loader.min.css">
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.1.4/components/message.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.1.4/components/menu.min.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.1.4/components/modal.min.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.1.4/components/reset.min.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.1.4/components/segment.min.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.1.4/components/site.min.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.1.4/components/table.min.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.1.4/components/transition.min.css">
-    <link href='http://fonts.googleapis.com/css?family=Lato&subset=latin,latin-ext' rel='stylesheet' type='text/css'>
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.1.4/components/modal.min.css">
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.1.4/components/reset.min.css">
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.1.4/components/segment.min.css">
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.1.4/components/site.min.css">
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.1.4/components/table.min.css">
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.1.4/components/transition.min.css">
+    <link href='https://fonts.googleapis.com/css?family=Lato&subset=latin,latin-ext' rel='stylesheet' type='text/css'>
   </head>
   <body>
     <div id="warningIE" style="padding-top: 10%; background: white; width: 100%; height: 100%; position: absolute; top: 0; left: 0; z-index: 10; padding: 15px; text-align: center">
@@ -88,7 +96,10 @@
       if(enableAdding){
 			document.write('<div class="item fitted"><button class="ui green button" onclick="addContact();"><i class="plus icon"></i> Přidat</button></div>');
       }
-	  if(enableLogout){
+	  if(enableImportExport){
+	    	document.write('<div class="item fitted"><button class="ui button" onclick="importExportModal();"><i class="file archive outline icon"></i> Import/Export</button></div>');
+      }
+      if(enableLogout){
 	    	document.write('<div class="item fitted"><button class="ui button" onclick="logoutModal();"><i class="sign out icon"></i> Odhlásit</button></div>');
       }
       if(enableQuickCallback){
@@ -277,19 +288,81 @@
 		</div>
 	  </div>
 	</div>
+	<!-- IMPORT/EXPORT MODAL -->
+    <div class="ui modal" id="importExportModal">
+	  <i class="close icon"></i>
+	  <div class="header">
+		Import/Export
+	  </div>
+	  <div class="content">
+		<div class="description">
+		  <p>Tato aplikace umožňuje import a export kontaktů ve formátu <b>vCard</b>.</p>
+		  <p>Pokud chcete importovat data z Google Kontaktů:</p>
+		  <ol>
+		  	<li>Na stránce <a href="https://www.google.com/contacts/u/0/?cplus=0#contacts">google.com/contacts</a> klikněte na tlačítko More, a pak Export.</li>
+		  	<li>Je možné, že potřebujete starší verzi Google Kontaktů, abyste mohli provádět export. V tom případě klikněte na <b>Go to old Google Contacts</b></li>
+		  	<li>Vyberte, které kontakty chcete exportovat a nastavte formát exportu na <b>vCard</b>.</li>
+		  	<li>Klikněte na Export a stáhněte soubor.</li>
+		  	<li>Poté v aplikaci soubor nahrajte a následujte pokyny průvodce.
+		  </ol>
+		  <input id="fileinput" type="file" name="fileinput" style="display: none;" />
+		</div>
+	  </div>
+	  <div class="actions">
+		<div class="ui black deny button">
+		  Zrušit
+		</div>
+		<div class="ui blue deny right labeled icon button" id="exportButton">
+		  Exportovat
+		  <i class="download icon"></i>
+		</div>
+		<div class="ui green right labeled icon button" id="importButton">
+		  Importovat
+		  <i class="wizard icon"></i>
+		</div>
+	  </div>
+	</div>
+	<!-- IMPORT WIZARD MODAL -->
+    <div class="ui modal" id="importWizardModal">
+	  <i class="close icon"></i>
+	  <div class="header">
+		Import
+	  </div>
+	  <div class="content">
+	    <p>Zkratky jsou načteny z pole Poznámky. Pokud zkratka chybí, je doplněna pořadovým číslem. Zkratky si můžete libovolně upravit.</p>
+	    <p><b>Pozor:</b> Import přepíše existující kontakty. Ujistěte se, že nedochází ke kolizím zkratek.</p>
+		<table class="ui celled compact table" id="tableWrapper">
+		  <thead><tr>
+			<th class="two wide">Zkratka</th>
+			<th>Název</th>
+			<th>Číslo</th>
+		  </tr></thead>
+		  <tbody id="tableImport">
+		  	
+		  </tbody>
+		 </table>
+	  </div>
+	  <div class="actions">
+		<div class="ui black deny button">
+		  Zrušit
+		</div>
+		<div class="ui positive right labeled icon button">
+		  Dokončit
+		  <i class="checkmark icon"></i>
+		</div>
+	  </div>
+	</div>
 	<!-- DIMMERS -->
 	<div class="ui page dimmer">
 	  <div class="content">
-	   <div class="center">
-	     <h1 class="ui inverted icon header">
-          	<i class="checkmark icon"></i>
-          	<small></small>
-             </h1>
-            </div>
+		 <h1 class="ui inverted icon header">
+          <i class="checkmark icon"></i>
+          <small></small>
+         </h1>
 	  </div>
 	</div>
     <!-- SCRIPTS -->
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
+    <script src="https://code.jquery.com/jquery-1.11.3.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.1.4/semantic.min.js"></script>
     <script>
     	// Disable caching of AJAX responses (so the data is properly updated)
@@ -300,6 +373,13 @@
 		// Initialize helper variables
 		var number;
 		var array;
+
+		if(enableAnimations){
+			var setDuration = 400;
+		}
+		else {
+			var setDuration = 0;			
+		}
 
     	// Is user logged in?
     	if(loggedIn()){
@@ -348,6 +428,7 @@
 			// Show the dialog
 			$('#loginModal').modal({
 			closable: false,
+			duration: setDuration,
 			blurring: true,
 			onApprove : function() {
 				// Animate button
@@ -368,11 +449,11 @@
 					// Check if there are any errors
 					if(result.indexOf("error") == 0){
 						// Show error animations
-						$("#loginModal").transition('shake');
+						$("#loginModal").transition('shake', setDuration+"ms");
 						if(badlogin)
-							$('#badLogin').transition("pulse");
+							$('#badLogin').transition("pulse", setDuration+"ms");
 						else {
-							$('#badLogin').transition("fade");
+							$('#badLogin').transition("fade", setDuration+"ms");
 							badlogin = true;
 						}
 					}
@@ -394,6 +475,7 @@
 		// Log out the user
 		function logoutModal(){
 			$('#logoutModal').modal({blurring: true,
+			duration: setDuration,
 			onApprove : function() {
 			  logout();
 			}
@@ -419,6 +501,7 @@
 		// Remove Contact
 		function removeContact(line, id){
 			$('#deleteModal').modal({
+			duration: setDuration,
 			blurring: true,
 			onApprove : function() {
 			  if(line == "main"){
@@ -448,6 +531,7 @@
 			$('input[name="edit-name"]').val(name);
 			$('input[name="edit-number"]').val(number);
 			$('#editModal').modal({
+			duration: setDuration,
 			blurring: true,
 			onApprove : function() {
 			  if(line == "main"){
@@ -478,6 +562,7 @@
 		// Add Contact
 		function addContact(){
 			$('#addModal').modal({
+			duration: setDuration,
 			blurring: true,
 			onApprove : function() {
 			  line = $('select[name="add-line"]').val();
@@ -595,7 +680,7 @@
 					}
 					$("#table").html(outstring);
 					if($(".ui.container").css("display") == "none"){
-						$(".ui.container").transition("fade");
+						$(".ui.container").transition("fade", setDuration+"ms");
 					}
 				}
 			});  
@@ -611,6 +696,7 @@
             }
 
 			$('#callModal').modal({
+			duration: setDuration,
 			blurring: true,
 			onApprove : function() {
 			  line = $('select[name="call-line"]').val();
@@ -672,14 +758,186 @@
             document.write("<style type='text/css'>#warningIE {display:none;}</style>");
             $("#warningIE").hide();
         }
-        
-        // Submit modals with ENTER key
-        $(".modal input").keypress(function(e) {
-            if(e.which == 13) {
-		var parentModal = $(e.target).parent().parent().parent().parent().attr("id"); // Yes, its ugly - but it works.
-		$("#"+parentModal+" .button.positive").click();
-            }
-        });
+
+        // Import/Export modal
+		function importExportModal(){
+			$('#importExportModal').modal({
+				duration: setDuration,
+				blurring: true
+		  }).modal('show');
+		}
+
+		// Read file
+		$("#importButton").click(function(){
+			$("#fileinput").trigger("click");
+			if (window.File && window.FileReader && window.FileList && window.Blob)
+			{
+				$("#fileinput").change(function(event) {
+					var reader = new FileReader();
+					reader.onload = function(e) {
+					  var text = reader.result;
+					  importVCard(text);
+					}
+
+					reader.readAsText(event.target.files[0], "utf-8");
+				});
+			}
+			else {
+			  alert('Váš prohlížeč nepodporuje API souborů');
+			}
+		});
+
+		// Parse vCard
+		function parse(input) {
+		    var Re1 = /^(version|fn|title|org|note):(.+)$/i;
+		    var Re2 = /^([^:;]+);([^:]+):(.+)$/;
+		    var ReKey = /item\d{1,2}\./;
+		    var fields = {};
+
+		    input.split(/\r\n|\r|\n/).forEach(function (line) {
+		        var results, key;
+
+		        if (Re1.test(line)) {
+		            results = line.match(Re1);
+		            key = results[1].toLowerCase();
+		            fields[key] = results[2];
+		        } else if (Re2.test(line)) {
+		            results = line.match(Re2);
+		            key = results[1].replace(ReKey, '').toLowerCase();
+
+		            var meta = {};
+		            results[2].split(';')
+		                .map(function (p, i) {
+		                var match = p.match(/([a-z]+)=(.*)/i);
+		                if (match) {
+		                    return [match[1], match[2]];
+		                } else {
+		                    return ["TYPE" + (i === 0 ? "" : i), p];
+		                }
+		            })
+		                .forEach(function (p) {
+		                meta[p[0]] = p[1];
+		            });
+
+		            if (!fields[key]) fields[key] = [];
+
+		            fields[key].push({
+		                meta: meta,
+		                value: results[3].split(';')
+		            })
+		        }
+		    });
+
+		    return fields;
+		};
+
+		// Helper function for replacing strings
+		function replaceAll(find, replace, str) {
+		  return str.replace(new RegExp(find, 'g'), replace);
+		}
+
+		// Unify phone number formats
+		function unifyNumber(input){
+			input = replaceAll(" ", "", input);
+			input = replaceAll("-", "", input);
+			input = input.replace("+", "00");
+
+			if(input.length != 6){
+				if(input.indexOf("00") != 0){
+				input = "00420" + input;
+				}
+			}
+
+			return input;
+		}
+
+		// Separate into individual contacts
+		function separate(input){
+			card = [];
+			array = input.split("END:VCARD");
+			for(i = 0; i < array.length; i++){
+			  card[i] = parse(array[i] + "END:VCARD");
+			}
+			return card;
+		}
+
+
+		// Import Wizard modal
+		function importVCard(input){
+			$("#tableImport").html("");
+			var contacts = separate(input);
+			for(i = 0; i < contacts.length; i++){
+				contact = contacts[i];
+				if(typeof contact.fn != "undefined"){
+					var shortcut = "";
+					if(typeof contact.note == "undefined"){
+						shortcut = i + 1;
+					}
+					else {
+						shortcut = contact.note;
+					}
+					$("#tableImport").append("<tr><td><div class='ui transparent fluid input'><input id='import-shortuct"+ i +"' type='number' min='1' value='"+ shortcut +"'></div></td>"
+						+ "<td><div class='ui transparent fluid input'><input id='import-name"+ i +"' value='"+ contact.fn +"'></div></td>"
+						+ "<td><div class='ui transparent fluid input'><input id='import-number"+ i +"' type='tel' value='"+ unifyNumber(contact.tel[0].value[0]) +"'></div></td></tr>");
+				}
+			}
+			$("#importWizardModal").modal({
+			duration: setDuration,
+		    onApprove: function(){
+		    	for(i = 0; i < contacts.length; i++){
+		    		if(typeof $("#import-shortuct"+i).val() != "undefined"){
+						$.ajax({
+							url: 'https://www.odorik.cz/api/v1/speed_dials.json',
+							type: 'POST',
+							data: { user: APIuser, password: APIpass, 
+									shortcut: $("#import-shortuct"+i).val(), 
+									name: $("#import-name"+i).val(), 
+									number: $("#import-number"+i).val() 
+								  },
+						  });
+					}
+				}
+				setTimeout("reload();", 1200);
+		    } }).modal("show");
+		}
+
+		// Save file
+		var saveData = (function () {
+		    var a = document.createElement("a");
+		    document.body.appendChild(a);
+		    a.style = "display: none";
+		    return function (data, fileName) {
+		        var json = data,
+		            blob = new Blob([json], {type: "octet/stream"}),
+		            url = window.URL.createObjectURL(blob);
+		        a.href = url;
+		        a.download = fileName;
+		        a.click();
+		        window.URL.revokeObjectURL(url);
+		    };
+		}());
+
+		$("#exportButton").click(function(){
+			$.ajax({
+				url: 'https://www.odorik.cz/api/v1/speed_dials.json',
+				type: 'GET',
+				data: { user: APIuser, password: APIpass },
+				success: function(result) {
+					array = result;
+					outstring = "";
+					for (var i = 0; i < result.length; i++) {
+						outstring += "BEGIN:VCARD\r\n";
+						outstring += "VERSION:3.0\r\n";
+						outstring += "FN:"+result[i].name+"\r\n";
+						outstring += "TEL;TYPE=CELL:"+result[i].number+"\r\n";
+						outstring += "NOTE:"+result[i].shortcut+"\r\n";
+						outstring += "END:VCARD\r\n";
+					}
+					saveData(outstring, "Kontakty.vcf")
+
+				}
+			});  
+		});
     </script>
   </body>
 </html>
