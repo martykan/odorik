@@ -44,6 +44,11 @@
     // př. var enableLogout = false // zakáže import/export
     var enableImportExport = true;
 
+    // Povolit úpravu přímo v tabulce :: true = povolit, false = zakázat //
+    // Klepněte dvakrát na políčko textu v tabulce a můžete ho přímo upravit //
+    // př. var enableInlineEditing = false // zakáže úpravy přímo v tabulce
+    var enableInlineEditing = true;
+
     // Povolit animace :: true = povolit, false = zakázat //
     // př. var enableAnimations = false // zakáže animace
     var enableAnimations = true;
@@ -79,7 +84,6 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.1.4/components/transition.min.css">
     <link href='https://fonts.googleapis.com/css?family=Lato&subset=latin,latin-ext' rel='stylesheet' type='text/css'>
   </head>
-
   <body>
     <div id="warningIE" style="padding-top: 10%; background: white; width: 100%; height: 100%; position: absolute; top: 0; left: 0; z-index: 10; padding: 15px; text-align: center">
         <p>Používáte zastaralý prohlížeč. Nainstalujte si Google Chrome nebo Mozillu Firefox.</p>
@@ -87,9 +91,9 @@
     <div class="ui container" style="display: none;">
         <!-- TITLE -->
         <h1 class="ui header">
-     	<br>Odorik.cz
-     	<div class="sub header">Rychlé kontakty <div class="ui orange label">BETA 1.4</div></div>
-     </h1>
+            <br>Odorik.cz
+            <div class="sub header">Rychlé kontakty <div class="ui orange label">BETA 1.4</div></div>
+        </h1>
         <script>
         if (enableAdding && enableLogout && enableQuickCallback) {
             document.write('<div class="ui secondary menu">');
@@ -647,7 +651,7 @@
                 outstring = "";
                 for (var i = 0; i < result.length; i++) {
                     if (editableLine("main", result[i].shortcut)) {
-                        outstring += '<tr><td>' + result[i].shortcut + '</td>' + '<td>' + result[i].name + '</td><td>' + result[i].number + '</td><td>';
+                        outstring += '<tr><td class="table-short-'+result[i].shortcut+'">' + result[i].shortcut + '</td>' + '<td class="table-name-'+result[i].shortcut+'">' + result[i].name + '</td><td class="table-num-'+result[i].shortcut+'">' + result[i].number + '</td><td>';
 
                         if (enableEditing || enableRemoving || enableCallback)
                             outstring += '<div class="ui icon buttons">';
@@ -667,7 +671,7 @@
                         outstring += '</td></tr>';
                     } else {
                         if (hideLockedNumbers == false) {
-                            outstring += '<tr><td>' + result[i].shortcut + '</td>' + '<td>' + result[i].name + '</td><td>' + result[i].number + '</td><td>';
+                            outstring += '<tr><td class="table-short-'+result[i].shortcut+'">' + result[i].shortcut + '</td>' + '<td class="table-name-'+result[i].shortcut+'">' + result[i].name + '</td><td class="table-num-'+result[i].shortcut+'">' + result[i].number + '</td><td>';
                             outstring += '<div class="ui icon buttons">' + '<button class="ui red button" disabled><i class="delete icon"></i></button>' + '<button class="ui blue button" disabled><i class="edit icon"></i></button>' + '<button class="ui green button" disabled><i class="call icon"></i></button></div>';
                             outstring += '</td></tr>';
                         }
@@ -678,6 +682,54 @@
                 if ($(".ui.container").css("display") == "none") {
                     $(".ui.container").transition("fade", setDuration + "ms");
                 }
+
+                if(enableInlineEditing){
+                    $("#table td").dblclick(function(){
+                        $(".edited").each(function(){
+                            $(this).text($(this).find("input").val());
+                        });
+                        $(".edited").removeClass("edited");
+                        $(this).addClass("edited");
+
+                        $(this).html("<div class='ui icon fluid input'><input type='text' id='inlineInput' value='"+$(this).text()+"'><i id='inlineSubmit' class='link checkmark icon'></i></div>");
+
+                        var id = $(this).attr("class").replace(" edited", "").split("-")[2];
+
+                        $("#inlineInput").keypress(function(e) {
+                            if (e.which == 13) {
+                                inlineEdit(id);
+                            }
+                        });
+                        $("#inlineSubmit").click(function(){
+                            inlineEdit(id);
+                        });
+                    });
+                }
+            }
+        });
+    }
+
+    function inlineEdit(id){
+        $(".edited").each(function(){
+            $(this).text($(this).find("input").val());
+        });
+        console.log($('.table-name-'+id).text());
+        $(".edited").removeClass("edited");
+        $.ajax({
+            url: 'https://www.odorik.cz/api/v1/speed_dials/' + id + '.json',
+            type: 'PUT',
+            data: {
+                user: APIuser,
+                password: APIpass,
+                shortcut: $('.table-short-' +id).text(),
+                name: $('.table-name-'+id).text(),
+                number: $('.table-num-'+id).text()
+            },
+            success: function(result) {
+                if (typeof result.errors != "undefined") {
+                    parseErrors(result);
+                }
+                setTimeout("reload();", 500);
             }
         });
     }
@@ -777,11 +829,11 @@
                         alert("Toto není platný soubor vCard");
                     }
                 }
-                
+
                 reader.readAsText(event.target.files[0], "utf-8");
             });
         } else {
-            alert('Váš prohlížeč nepodporuje API souborů');
+            dim(false, "Váš prohlížeč nepodporuje API souborů");
         }
     });
 
