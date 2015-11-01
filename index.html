@@ -770,9 +770,14 @@
                 var reader = new FileReader();
                 reader.onload = function(e) {
                     var text = reader.result;
-                    importVCard(text);
+                    if(text.indexOf("VCARD") > 0){
+                        importVCard(text);
+                    }
+                    else {
+                        alert("Toto není platný soubor vCard");
+                    }
                 }
-
+                
                 reader.readAsText(event.target.files[0], "utf-8");
             });
         } else {
@@ -861,7 +866,7 @@
         var contacts = separate(input);
         for (i = 0; i < contacts.length; i++) {
             contact = contacts[i];
-            if (typeof contact.fn != "undefined") {
+            if (typeof contact.tel != "undefined" && typeof contact.fn != "undefined") {
                 var shortcut = "";
                 if (typeof contact.note == "undefined") {
                     shortcut = i + 1;
