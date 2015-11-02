@@ -308,7 +308,7 @@
                     <li>Je možné, že potřebujete starší verzi Google Kontaktů, abyste mohli provádět export. V tom případě klikněte na <b>Přejít do starých kontaktů</b></li>
                     <li>Vyberte, které kontakty chcete exportovat a nastavte formát exportu na <b>vCard</b>.</li>
                     <li>Klikněte na Export a stáhněte soubor.</li>
-                    <li>Poté co v aplikaci soubor nahrajte, se vám zobrazí náhled, kde můžete kontakty doupravit podle vašich představ.</li>
+                    <li>Poté, co v aplikaci soubor nahrajte, se vám zobrazí náhled, kde můžete kontakty doupravit podle vašich představ.</li>
                 </ol>
                 <input id="fileinput" type="file" name="fileinput" style="display: none;" />
             </div>
@@ -392,6 +392,9 @@
     } else {
         logInDialog(); // Show login dialog
     }
+
+    var allNumbers = [];
+    var allShortcuts = [];
 
     // Detect if user is logged in 
     function loggedIn() {
@@ -639,6 +642,8 @@
 
     // Reload list
     function reload() {
+        allShortcuts = [];
+        allNumbers = [];
         $.ajax({
             url: 'https://www.odorik.cz/api/v1/speed_dials.json',
             type: 'GET',
@@ -650,6 +655,8 @@
                 array = result;
                 outstring = "";
                 for (var i = 0; i < result.length; i++) {
+                    allNumbers.push(result[i].number);
+                    allShortcuts.push(result[i].shortcut);
                     if (editableLine("main", result[i].shortcut)) {
                         outstring += '<tr><td class="table-short-'+result[i].shortcut+'">' + result[i].shortcut + '</td>' + '<td class="table-name-'+result[i].shortcut+'">' + result[i].name + '</td><td class="table-num-'+result[i].shortcut+'">' + result[i].number + '</td><td>';
 
@@ -915,17 +922,40 @@
     // Import Wizard modal
     function importVCard(input) {
         $("#tableImport").html("");
+        var usedShortcuts = [];
         var contacts = separate(input);
+        var totalCount = 0;
         for (i = 0; i < contacts.length; i++) {
             contact = contacts[i];
             if (typeof contact.tel != "undefined" && typeof contact.fn != "undefined") {
-                var shortcut = "";
-                if (typeof contact.note == "undefined") {
-                    shortcut = i + 1;
-                } else {
-                    shortcut = contact.note;
-                }
-                $("#tableImport").append("<tr><td><div class='ui transparent fluid input'><input id='import-shortuct" + i + "' type='number' min='1' value='" + shortcut + "'></div></td>" + "<td><div class='ui transparent fluid input'><input id='import-name" + i + "' value='" + contact.fn + "'></div></td>" + "<td><div class='ui transparent fluid input'><input id='import-number" + i + "' type='tel' value='" + unifyNumber(contact.tel[0].value[0]) + "'></div></td></tr>");
+                for (a = 0; a < contact.tel.length; a++) {
+                    totalCount += 1;
+                    var shortcut = "";
+                    if (typeof contact.note == "undefined") {
+                        shortcut = totalCount;
+                        while($.inArray(shortcut, allShortcuts) > -1 || $.inArray(shortcut, usedShortcuts) > -1){
+                            console.log(shortcut);
+                            shortcut = shortcut + 1;
+                        }
+                    } else {
+                        shortcut = contact.note;
+                    }
+                    usedShortcuts.push(shortcut);
+
+                    var warning = "";
+                    if($.inArray(Number(shortcut), allShortcuts) > -1){
+                        warning = "error";
+                    }
+                    $("#tableImport").append("<tr><td><div class='ui transparent fluid "+ warning +" input'><input class='shortuctImport' id='import-shortuct" + i + "' type='number' min='1' value='" + shortcut + "'></div></td>" + "<td><div class='ui transparent fluid input'><input id='import-name" + i + "' value='" + contact.fn + "'></div></td>" + "<td><div class='ui transparent fluid input'><input id='import-number" + i + "' type='tel' value='" + unifyNumber(contact.tel[a].value[0]) + "'></div></td></tr>");
+                    }
+                    $(".shortuctImport").change(function(){
+                        if($.inArray(Number($(this).val()), allShortcuts) == -1){
+                            $(this).parent().removeClass("error");
+                        }
+                        else {
+                            $(this).parent().addClass("error");
+                        }
+                    });
             }
         }
         $("#importWizardModal").modal({
