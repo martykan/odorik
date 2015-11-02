@@ -921,16 +921,22 @@
 
     // Import Wizard modal
     function importVCard(input) {
+        // Clear table
         $("#tableImport").html("");
+        // Initialize helper variables
         var usedShortcuts = [];
         var contacts = separate(input);
         var totalCount = 0;
+        // Loop through individual contacts
         for (i = 0; i < contacts.length; i++) {
             contact = contacts[i];
+            // Check if number and name is set
             if (typeof contact.tel != "undefined" && typeof contact.fn != "undefined") {
+                // Loop through specific phone numbers
                 for (a = 0; a < contact.tel.length; a++) {
                     totalCount += 1;
                     var shortcut = "";
+                    // Check if the shortcut is defined and if not, define it
                     if (typeof contact.note == "undefined") {
                         shortcut = totalCount;
                         while($.inArray(shortcut, allShortcuts) > -1 || $.inArray(shortcut, usedShortcuts) > -1){
@@ -941,13 +947,15 @@
                         shortcut = contact.note;
                     }
                     usedShortcuts.push(shortcut);
-
+                    // Warn against conflicts in shortcuts
                     var warning = "";
                     if($.inArray(Number(shortcut), allShortcuts) > -1){
                         warning = "error";
                     }
+                    // Append to table
                     $("#tableImport").append("<tr><td><div class='ui transparent fluid "+ warning +" input'><input class='shortuctImport' id='import-shortuct" + i + "' type='number' min='1' value='" + shortcut + "'></div></td>" + "<td><div class='ui transparent fluid input'><input id='import-name" + i + "' value='" + contact.fn + "'></div></td>" + "<td><div class='ui transparent fluid input'><input id='import-number" + i + "' type='tel' value='" + unifyNumber(contact.tel[a].value[0]) + "'></div></td></tr>");
                     }
+                    // Check for change in shortcuts and hide conflict warnings
                     $(".shortuctImport").change(function(){
                         if($.inArray(Number($(this).val()), allShortcuts) == -1){
                             $(this).parent().removeClass("error");
@@ -958,9 +966,11 @@
                     });
             }
         }
+        // Show modal with table
         $("#importWizardModal").modal({
             duration: setDuration,
             onApprove: function() {
+                // Loop through entries and save them
                 for (i = 0; i < contacts.length; i++) {
                     if (typeof $("#import-shortuct" + i).val() != "undefined") {
                         $.ajax({
@@ -981,7 +991,7 @@
         }).modal("show");
     }
 
-    // Save file
+    // Save file function
     var saveData = (function() {
         var a = document.createElement("a");
         document.body.appendChild(a);
@@ -999,6 +1009,7 @@
         };
     }());
 
+    // Export
     $("#exportButton").click(function() {
         $.ajax({
             url: 'https://www.odorik.cz/api/v1/speed_dials.json',
