@@ -1044,6 +1044,24 @@
             }
         });
     });
+    
+    $("#addModal input").keypress(function(e){
+        if (e.which == 13) {
+            $("#addModal .positive").click();
+        }
+    });
+
+    $("#editModal input").keypress(function(e){
+        if (e.which == 13) {
+            $("#editModal .positive").click();
+        }
+    });
+
+    $("#loginModal input").keypress(function(e){
+        if (e.which == 13) {
+            $("#loginModal .positive").click();
+        }
+    });
     </script>
   </body>
 </html>
