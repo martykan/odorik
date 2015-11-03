@@ -12,70 +12,57 @@ Dokumentaci API najdete na: http://www.odorik.cz/w/api
 ## Nastavení v hlavičce
 API uživatelské jméno a heslo - automatické přihlášení
 
-    var APIuser = "";
-    var APIpass = "";
+    var APIuser = "1234560";
+    var APIpass = "abc9de99";
 
 Zamknutá čísla - čárkou oddělený seznam zkratek (klapek), které nejde editovat
 
-    // př. var lockedNumbers = "1,7" // zakáže čísla 1 a 7
-    var lockedNumbers = "";
+    var lockedNumbers = "1,7"; // zakáže čísla 1 a 7
 
 Skrytí zamknutých čísel - nezobrazovat vůbec, nebo zobrazit, ale zakázat úpravy
 
-    // př. var hideLockedNumbers = true // nezobrazí vůbec 
-    var hideLockedNumbers = true;
-
+    var hideLockedNumbers = true; // nezobrazí je vůbec 
+    
 Povolit přidávání nových čísel
 
-    // př. var enableAdding = false // zakáže přidávání
-    var enableAdding = true;
+    var enableAdding = false; // zakáže přidávání
 
 Povolit upravování nových čísel
 
-    // př. var enableEditing = true // povolí úpravy
-    var enableEditing = true;
+    var enableEditing = true; // povolí úpravy
 
-Povolit mazání nových čísel
+Povolit mazání čísel
 
-    // př. var enableRemoving = false // zakáže mazání
-    var enableRemoving = true;
+    var enableRemoving = false; // zakáže mazání
 
 Povolit callback
 
-    // př. var enableCallback = false // zakáže callback
-    var enableCallback = true;
+    var enableCallback = false; // zakáže callback
 
 Povolit políčko rychlého callbacku
 
-    // př. var enableQuickCallback = false // zakáže políčko callbacku
-    var enableQuickCallback = true;
+    var enableQuickCallback = false; // zakáže políčko rychlého callbacku
 
 Povolit odhlašovaní uživatele
 
-    // př. var enableLogout = false // zakáže odhlašování
-    var enableLogout = true;
+    var enableLogout = false; // zakáže odhlašování
 
 Povolit import/export
 
-    // př. var enableLogout = false // zakáže import/export
-    var enableImportExport = true;
+    var enableLogout = false; // zakáže import/export
 
 Povolit úpravu přímo v tabulce - dvojklikem na číslo jej můžete přímo upravit
 
-    // př. var enableInlineEditing = false // zakáže úpravy přímo v tabulce
-    var enableInlineEditing = true;
+    var enableInlineEditing = false; // zakáže úpravy přímo v tabulce
 
 Povolit animace
-    
-    // př. var enableAnimations = false // zakáže animace
-    var enableAnimations = true;
+
+    var enableAnimations = false; // zakáže animace
 
 Přednastavené číslo pro callback
 
-    // př. var defaultCallbackNumber = "0085023815827"; // nastaví výchozí číslo pro callback na 0085023815827
-    var defaultCallbackNumber = "";
+    var defaultCallbackNumber = "0085023815827"; // nastaví výchozí číslo pro callback na 0085023815827
 
 Povolit tmavé téma - vhodné pro osoby se zrakovými problémy
 
-    // př. var darkTheme = true // povolí tmavé téma
-    var darkTheme = false;
+    var darkTheme = true; // povolí tmavé téma
