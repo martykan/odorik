@@ -57,6 +57,11 @@
     // př. var defaultCallbackNumber = "0085023815827"; // nastaví výchozí číslo pro callback na 0085023815827
     var defaultCallbackNumber = "";
 
+    // Povolit tmavé téma :: true = povolit, false = zakázat //
+    // Vhodné pro osoby se zrakovými problémy //
+    // př. var darkTheme = true // povolí tmavé téma
+    var darkTheme = false;
+
     // KONEC NASTAVENÍ //
     // Pokud chcete upravit nějaké názvy, můžete v HTML kódu níže.
     </script>
@@ -379,6 +384,11 @@
     // Initialize helper variables
     var number;
     var array;
+    
+    if(darkTheme){
+        $("body").css("background", "#333");
+        $(".header").css("color", "#fff");
+    }
 
     if (enableAnimations) {
         var setDuration = 400;
