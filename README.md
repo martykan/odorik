@@ -78,4 +78,4 @@ Přednastavené číslo pro callback
 Povolit tmavé téma - vhodné pro osoby se zrakovými problémy
 
     // př. var darkTheme = true // povolí tmavé téma
-    var darkTheme = false;> 
+    var darkTheme = false;
