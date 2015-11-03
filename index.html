@@ -952,7 +952,7 @@
                     // Check if the shortcut is defined and if not, define it
                     if (typeof contact.note == "undefined" || isNaN(contact.note)) {
                         shortcut = totalCount;
-                        while($.inArray(shortcut, allShortcuts) > -1 || $.inArray(shortcut, usedShortcuts) > -1 || (shortcut < 200 && shortcut > 99)){
+                        while($.inArray(shortcut, allShortcuts) > -1 || $.inArray(shortcut, usedShortcuts) > -1 || shortcut < 200 && shortcut > 99){
                             console.log(shortcut);
                             shortcut = shortcut + 1;
                         }
