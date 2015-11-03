@@ -592,12 +592,7 @@
             duration: setDuration,
             blurring: true,
             onApprove: function() {
-                line = $('select[name="add-line"]').val();
-                if (line == "main") {
-                    requestURL = 'https://www.odorik.cz/api/v1/speed_dials.json';
-                } else {
-                    requestURL = "https://www.odorik.cz/api/v1/lines/" + line + '/speed_dials.json';
-                }
+                requestURL = 'https://www.odorik.cz/api/v1/speed_dials.json';
                 $.ajax({
                     url: requestURL,
                     type: 'POST',
