@@ -932,6 +932,7 @@
         $("#tableImport").html("");
         // Initialize helper variables
         var usedShortcuts = [];
+        var usedNumbers = [];
         var contacts = separate(replaceAll("TEL:", "TEL;TYPE=HOME:", input));
         var totalCount = 0;
         // Loop through individual contacts
@@ -941,27 +942,30 @@
             if (typeof contact.tel != "undefined" && typeof contact.fn != "undefined") {
                 // Loop through specific phone numbers
                     for (a = 0; a < contact.tel.length; a++) {
-                    totalCount += 1;
-                    var shortcut = "";
-                    // Check if the shortcut is defined and if not, define it
-                    if (typeof contact.note == "undefined" || isNaN(contact.note)) {
-                        shortcut = totalCount;
-                        while($.inArray(shortcut, allShortcuts) > -1 || $.inArray(shortcut, usedShortcuts) > -1 || shortcut < 200 && shortcut > 99){
-                            console.log(shortcut);
-                            shortcut = shortcut + 1;
+                        if($.inArray(contact.tel[a].value[0], usedNumbers) == -1){
+                            usedNumbers.push(contact.tel[a].value[0]);
+                            totalCount += 1;
+                            var shortcut = "";
+                            // Check if the shortcut is defined and if not, define it
+                            if (typeof contact.note == "undefined" || isNaN(contact.note)) {
+                                shortcut = totalCount;
+                                while($.inArray(shortcut, allShortcuts) > -1 || $.inArray(shortcut, usedShortcuts) > -1 || shortcut < 200 && shortcut > 99){
+                                    console.log(shortcut);
+                                    shortcut = shortcut + 1;
+                                }
+                            } else {
+                                shortcut = contact.note;
+                            }
+                            usedShortcuts.push(shortcut);
+                            // Warn against conflicts in shortcuts
+                            var warning = "";
+                            if($.inArray(Number(shortcut), allShortcuts) > -1){
+                                warning = "error";
+                            }
+                            // Append to table
+                            $("#tableImport").append("<tr class='"+ warning +"'><td><div class='ui transparent left icon fluid "+ warning +" input'><i style='display: none' class='warning sign icon'></i><input class='shortuctImport' id='import-shortuct" + i + "' type='number' min='1' value='" + shortcut + "'></div></td>" + "<td><div class='ui transparent fluid input'><input id='import-name" + i + "' value='" + contact.fn + "'></div></td>" + "<td><div class='ui transparent fluid input'><input id='import-number" + i + "' type='tel' value='" + unifyNumber(contact.tel[a].value[0]) + "'></div></td></tr>");
+                            }
                         }
-                    } else {
-                        shortcut = contact.note;
-                    }
-                    usedShortcuts.push(shortcut);
-                    // Warn against conflicts in shortcuts
-                    var warning = "";
-                    if($.inArray(Number(shortcut), allShortcuts) > -1){
-                        warning = "error";
-                    }
-                    // Append to table
-                    $("#tableImport").append("<tr class='"+ warning +"'><td><div class='ui transparent left icon fluid "+ warning +" input'><i style='display: none' class='warning sign icon'></i><input class='shortuctImport' id='import-shortuct" + i + "' type='number' min='1' value='" + shortcut + "'></div></td>" + "<td><div class='ui transparent fluid input'><input id='import-name" + i + "' value='" + contact.fn + "'></div></td>" + "<td><div class='ui transparent fluid input'><input id='import-number" + i + "' type='tel' value='" + unifyNumber(contact.tel[a].value[0]) + "'></div></td></tr>");
-                    }
                     // Check for change in shortcuts and hide conflict warnings
                     $(".shortuctImport").change(function(){
                         if($.inArray(Number($(this).val()), allShortcuts) == -1){
