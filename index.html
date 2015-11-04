@@ -309,11 +309,11 @@
                 <p>Tato aplikace umožňuje import a export kontaktů ve formátu <b>vCard</b>.</p>
                 <p>Pokud chcete importovat data z Google Kontaktů:</p>
                 <ol>
-                    <li>Na stránce <a href="https://www.google.com/contacts/u/0/?cplus=0#contacts" target="_blank">google.com/contacts</a> klikněte na tlačítko <b>Více</b>, <b>a pak Export.</b></li>
-                    <li>Je možné, že potřebujete starší verzi Google Kontaktů, abyste mohli provádět export. V tom případě klikněte na <b>Přejít do starých kontaktů</b></li>
-                    <li>Vyberte, které kontakty chcete exportovat a nastavte formát exportu na <b>vCard</b>.</li>
-                    <li>Klikněte na Export a stáhněte soubor.</li>
-                    <li>Poté, co v aplikaci soubor nahrajte, se vám zobrazí náhled, kde můžete kontakty doupravit podle vašich představ.</li>
+                    <li>Na stránce <a href="https://www.google.com/contacts/u/0/?cplus=0#contacts" target="_blank">google.com/contacts</a> klikněte na tlačítko <b>Další</b>, a pak <b>Export.</b></li>
+                    <li>Vyberte formát exportu <b>vCard</b>.</li>
+                    <li>Stáhněte a uložte soubor s kontakty.</li>
+                    <li>Soubor nahrajte do naší aplikace kliknutím na tlačítko "importovat" níže na této stránce.</li>
+                    <li>Jednotlivým kontaktům budou navrženy nejnižší volné zkratky (čísla rychlých kontaktů), které ale můžete ručně změnit. Pokud zvolíte použitá čísla rychlých kontaktů, přemažete je.</li>
                 </ol>
                 <input id="fileinput" type="file" name="fileinput" style="display: none;" />
             </div>
@@ -339,7 +339,7 @@
             Import
         </div>
         <div class="content">
-            <p>Zkratky jsou načteny z pole Poznámky. Pokud zkratka chybí, je doplněna pořadovým číslem. Zkratky si můžete libovolně upravit. Pokud chcete kontakt vynechat, nastavte jeho zkratku na nulu.</p>
+            <p>Pokud je v pole poznámka uloženo číslo, je použito jako číslo zkratky.  V opačném případě jsou použity následující volné pozice. Čísla zkratek i texty k číslům si můžete libovolně upravit. Pokud chcete kontakt vynechat, nastavte jeho zkratku na nulu.</p>
             <p><b>Pozor:</b> Pokud navržené čísla zkratek změníte, může se stát že si přepíšete existující záznamy pod stejným číslem. Budete na to upozorněni zčervenáním čísla zkratky po opuštění editačního pole.</p>
             <table class="ui celled compact table" id="tableWrapper">
                 <thead>
@@ -981,7 +981,7 @@
                                 warning = "error";
                             }
                             // Append to table
-                            $("#tableImport").append("<tr class='"+ warning +"'><td><div class='ui transparent left icon fluid "+ warning +" input'><i style='display: none' class='warning sign icon'></i><input class='shortuctImport' id='import-shortuct" + i + "' type='number' min='1' value='" + shortcut + "'></div></td>" + "<td><div class='ui transparent fluid input'><input id='import-name" + i + "' value='" + contact.fn + type + "'></div></td>" + "<td><div class='ui transparent fluid input'><input id='import-number" + i + "' type='tel' value='" + unifyNumber(contact.tel[a].value[0]) + "'></div></td></tr>");
+                            $("#tableImport").append("<tr class='"+ warning +"'><td><div class='ui transparent left icon fluid "+ warning +" input'><i style='display: none' class='remove icon'></i><input class='shortuctImport' id='import-shortuct" + i + "' type='number' min='1' value='" + shortcut + "'></div></td>" + "<td><div class='ui transparent fluid input'><input id='import-name" + i + "' value='" + contact.fn + type + "'></div></td>" + "<td><div class='ui transparent fluid input'><input id='import-number" + i + "' type='tel' value='" + unifyNumber(contact.tel[a].value[0]) + "'></div></td></tr>");
                             }
                         }
                     // Check for change in shortcuts and hide conflict warnings
