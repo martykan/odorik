@@ -830,6 +830,7 @@
 
     // Read file
     $("#importButton").click(function() {
+        $("#importButton").addClass("loading");
         $("#fileinput").trigger("click");
         if (window.File && window.FileReader && window.FileList && window.Blob) {
             $("#fileinput").change(function(event) {
@@ -998,6 +999,7 @@
                     });
             }
         }
+        $("#importButton").removeClass("loading");
         // Show modal with table
         $("#importWizardModal").modal({
             duration: setDuration,
