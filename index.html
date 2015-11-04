@@ -943,8 +943,8 @@
             if (typeof contact.tel != "undefined" && typeof contact.fn != "undefined") {
                 // Loop through specific phone numbers
                     for (a = 0; a < contact.tel.length; a++) {
-                        if($.inArray(contact.tel[a].value[0], usedNumbers) == -1){
-                            usedNumbers.push(contact.tel[a].value[0]);
+                        if($.inArray(unifyNumber(contact.tel[a].value[0]), usedNumbers) == -1){
+                            usedNumbers.push(unifyNumber(contact.tel[a].value[0]));
                             totalCount += 1;
                             var shortcut = "";
                             // Check if the shortcut is defined and if not, define it
