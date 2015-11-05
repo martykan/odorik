@@ -1,3 +1,4 @@
+
 <!DOCTYPE html5>
 <html>
   <head>
@@ -245,6 +246,7 @@
             Přihlášení
         </div>
         <div class="content">
+          Tyto údaje najdete po přihlášení v menu  <b>nastavení účtu</b>, v sekci <b>API heslo</b>. <br> <br>
             <form class="ui form">
                 <div class="field">
                     <label>API uživatelské jméno</label>
@@ -257,7 +259,6 @@
             </form>
             <div class="ui negative message" id="badLogin" style="display: none;">
                 <div class="header">Nesprávné uživatelské jméno nebo heslo.</div>
-                Tyto údaje najdetev nastavení účtu, v sekci API heslo.
             </div>
         </div>
         <div class="actions">
@@ -307,13 +308,15 @@
         <div class="content">
             <div class="description">
                 <p>Tato aplikace umožňuje import a export kontaktů ve formátu <b>vCard</b>.</p>
-                <p>Pokud chcete importovat data z Google Kontaktů:</p>
+                <p>Pokud chcete importovat data z Google kontaktů:</p>
                 <ol>
-                    <li>Na stránce <a href="https://www.google.com/contacts/u/0/?cplus=0#contacts" target="_blank">google.com/contacts</a> klikněte na tlačítko <b>Další</b>, a pak <b>Export.</b></li>
-                    <li>Vyberte formát exportu <b>vCard</b>.</li>
-                    <li>Stáhněte a uložte soubor s kontakty.</li>
-                    <li>Soubor nahrajte do naší aplikace kliknutím na tlačítko "importovat" níže na této stránce.</li>
-                    <li>Jednotlivým kontaktům budou navrženy nejnižší volné zkratky (čísla rychlých kontaktů), které ale můžete ručně změnit. Pokud zvolíte použitá čísla rychlých kontaktů, přemažete je.</li>
+                  <li>Na stránce <a href="https://www.google.com/contacts/u/0/?cplus=0#contacts" target="_blank">google.com/contacts</a> vyberte kontakty.
+                  <li>Klikněte na <b>Další</b>, a pak <b>Exportovat...</b>. </li>
+                  <li>V následujicím okně vyberte formát exportu <b>vCard</b> a stáhněte a uložte soubor s kontakty kliknutím na tlačítko <b>Exportovat</b>.</li>
+                  <li>Níže v tomto okně klikněte na tlačítko <b>Importovat</b> a vyberte připravený soubor s kontakty.</li>
+                  <li>Jako čísla zkratek budou navrženy následující volné pozice, případně budou použita čísla uložená v poli <b>poznámka</b> u jednotlivých kontaktů.
+                      Před uložením dostanete  možnost si vše prohlédnout a ručně upravit, případně import zrušit.
+         </li>
                 </ol>
                 <input id="fileinput" type="file" name="fileinput" style="display: none;" />
             </div>
@@ -339,8 +342,9 @@
             Import
         </div>
         <div class="content">
-            <p>Pokud je v poli <b>poznámka</b> uloženo číslo, je použito jako číslo zkratky.  V opačném případě jsou použity následující volné pozice. Čísla zkratek i texty k číslům si můžete libovolně upravit. Pokud chcete kontakt vynechat, nastavte jeho zkratku na nulu.</p>
-            <p><b>Pozor:</b> Pokud navržené čísla zkratek změníte, může se stát že si přepíšete existující záznamy pod stejným číslem. Budete na to upozorněni zčervenáním čísla zkratky po opuštění editačního pole.</p>
+            <p>Čísla zkratek i texty k číslům si můžete libovolně upravit. Pokud chcete kontakt vynechat, nastavte jeho zkratku na nulu.</p>
+            <p><b>Pozor:</b> Pokud navržená čísla zkratek změníte, může se stát, že si následným uložením přepíšete existující záznamy pod stejným číslem.
+                             Budete na to upozorněni zčervenáním čísla zkratky po opuštění editačního pole.</p>
             <table class="ui celled compact table" id="tableWrapper">
                 <thead>
                     <tr>
