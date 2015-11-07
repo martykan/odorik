@@ -705,12 +705,12 @@
                 if(enableInlineEditing){
                     $("#table td").dblclick(function(){
                         $(".edited").each(function(){
-                            $(this).text($(this).find("input").val());
+                            $(this).text($(this).find("input").attr("data-original"));
                         });
                         $(".edited").removeClass("edited");
                         $(this).addClass("edited");
 
-                        $(this).html("<div class='ui icon fluid input'><input type='text' id='inlineInput' value='"+$(this).text()+"'><i id='inlineSubmit' class='link checkmark icon'></i></div>");
+                        $(this).html("<div class='ui icon fluid input'><input type='text' data-original='"+$(this).text()+"' id='inlineInput' value='"+$(this).text()+"'><i id='inlineSubmit' class='link checkmark icon'></i></div>");
 
                         var id = $(this).attr("class").replace(" edited", "").split("-")[2];
 
@@ -718,9 +718,6 @@
                             if (e.which == 13) {
                                 inlineEdit(id);
                             }
-                        });
-                        $("#inlineInput").blur(function() {
-                            inlineEdit(id);
                         });
                         $("#inlineSubmit").click(function(){
                             inlineEdit(id);
