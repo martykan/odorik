@@ -1,4 +1,3 @@
-
 <!DOCTYPE html5>
 <html>
   <head>
@@ -162,7 +161,6 @@
             Upravit kontakt
         </div>
         <div class="content">
-            <p><b>TIP: </b>Pro rychlé úpravy dvakrát klikněte na políčko v seznamu kontaktů.</p>
             <form class="ui form">
                 <div class="field">
                     <label>Zkratka</label>
@@ -177,6 +175,7 @@
                     <input type="text" name="edit-number">
                 </div>
             </form>
+            <p><b>TIP: </b>Lze editovat i dvojklikem na hlavní stránce.</p>
         </div>
         <div class="actions">
             <div class="ui black deny button">
@@ -244,13 +243,13 @@
     <!-- LOGIN MODAL -->
     <div class="ui small modal" id="loginModal">
         <div class="header">
-            Přihlášení
+          Odorik.cz -  API WEB - správa rychlých kontaktů
         </div>
         <div class="content">
-          Tyto údaje najdete po přihlášení v menu  <b>nastavení účtu</b>, v sekci <b>API heslo</b>. <br> <br>
+          API jméno a heslo najdete po přihlášení v menu  <a href="https://www.odorik.cz/ucet/nastaveni_uctu.html?ucet_podmenu=api_heslo" target="_blank">nastavení účtu -> API heslo.</a>  <br> <br>
             <form class="ui form">
                 <div class="field">
-                    <label>API uživatelské jméno</label>
+                    <label>API jméno</label>
                     <input type="text" name="login-name">
                 </div>
                 <div class="field">
@@ -260,7 +259,8 @@
             </form>
             <div class="ui negative message" id="badLogin" style="display: none;">
                 <div class="header">Nesprávné uživatelské jméno nebo heslo.</div>
-            </div>
+              </div>              
+              <a href="https://github.com/martykan/odorik/blob/gh-pages/index.html">Zdrojový kód</a> této "single page" applikace je k dispozici <a href="https://github.com/martykan/odorik">včetně dokumentace</a>. Můžete si jej sami nechat upravit a integrovat  např. do vlastních webových stránek.
         </div>
         <div class="actions">
             <div class="ui positive right labeled icon button">
