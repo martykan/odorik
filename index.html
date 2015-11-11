@@ -326,10 +326,10 @@
             <div class="ui black deny button">
                 Zrušit
             </div>
-            <div class="ui blue deny right labeled icon button" id="exportButton">
+            <a class="ui blue right labeled icon button" download="Kontakty.vcf" href="#" id="exportButton">
                 Exportovat
                 <i class="download icon"></i>
-            </div>
+            </a>
             <div class="ui green right labeled icon button" id="importButton">
                 Importovat
                 <i class="wizard icon"></i>
@@ -825,14 +825,51 @@
         $("#warningIE").hide();
     }
 
+    var textFile = null,
+      makeTextFile = function (text) {
+        var data = new Blob([text], {type: 'text/plain'});
+
+        // If we are replacing a previously generated file we need to
+        // manually revoke the object URL to avoid memory leaks.
+        if (textFile !== null) {
+          window.URL.revokeObjectURL(textFile);
+        }
+
+        textFile = window.URL.createObjectURL(data);
+
+        // returns a URL you can use as a href
+        return textFile;
+      };
+
     // Import/Export modal
     function importExportModal() {
+        $.ajax({
+            url: 'https://www.odorik.cz/api/v1/speed_dials.json',
+            type: 'GET',
+            data: {
+                user: APIuser,
+                password: APIpass
+            },
+            success: function(result) {
+                array = result;
+                outstring = "";
+                for (var i = 0; i < result.length; i++) {
+                    outstring += "BEGIN:VCARD\r\n";
+                    outstring += "VERSION:3.0\r\n";
+                    outstring += "FN:" + result[i].name + "\r\n";
+                    outstring += "TEL;TYPE=CELL:" + result[i].number + "\r\n";
+                    outstring += "NOTE:" + result[i].shortcut + "\r\n";
+                    outstring += "END:VCARD\r\n";
+                }
+                $("#exportButton").attr("href", makeTextFile(outstring));
+            }
+        });
+
         $('#importExportModal').modal({
             duration: setDuration,
             blurring: true
         }).modal('show');
     }
-
     // Read file
     $("#importButton").click(function() {
         $("#importButton").addClass("loading");
@@ -1029,50 +1066,6 @@
             }
         }).modal("show");
     }
-
-    // Save file function
-    var saveData = (function() {
-        var a = document.createElement("a");
-        document.body.appendChild(a);
-        a.style = "display: none";
-        return function(data, fileName) {
-            var json = data,
-                blob = new Blob([json], {
-                    type: "octet/stream"
-                }),
-                url = window.URL.createObjectURL(blob);
-            a.href = url;
-            a.download = fileName;
-            a.click();
-            window.URL.revokeObjectURL(url);
-        };
-    }());
-
-    // Export
-    $("#exportButton").click(function() {
-        $.ajax({
-            url: 'https://www.odorik.cz/api/v1/speed_dials.json',
-            type: 'GET',
-            data: {
-                user: APIuser,
-                password: APIpass
-            },
-            success: function(result) {
-                array = result;
-                outstring = "";
-                for (var i = 0; i < result.length; i++) {
-                    outstring += "BEGIN:VCARD\r\n";
-                    outstring += "VERSION:3.0\r\n";
-                    outstring += "FN:" + result[i].name + "\r\n";
-                    outstring += "TEL;TYPE=CELL:" + result[i].number + "\r\n";
-                    outstring += "NOTE:" + result[i].shortcut + "\r\n";
-                    outstring += "END:VCARD\r\n";
-                }
-                saveData(outstring, "Kontakty.vcf")
-
-            }
-        });
-    });
 
     $("#addModal input").keypress(function(e){
         if (e.which == 13) {
