@@ -691,13 +691,9 @@
                 $('#categorySelector').addClass("loading");
                 if(value == "speedDials"){
                     reloadContacts();
-                    $(".callHistoryContent").hide();
-                    $(".speedDialsContent").show();
                 }
                 if(value == "callHistory"){
                     reloadCalls();
-                    $(".speedDialsContent").hide();
-                    $(".callHistoryContent").show();
                 }
             }
         });
@@ -838,6 +834,9 @@
                 }
 
                 $('#categorySelector').removeClass("loading");
+
+                $(".callHistoryContent").hide();
+                $(".speedDialsContent").show();
 
                 if(enableInlineEditing){
                     $("#tableContacts td").dblclick(function(){
@@ -1497,6 +1496,9 @@
                 }
 
                 $('#categorySelector').removeClass("loading");
+
+                $(".speedDialsContent").hide();
+                $(".callHistoryContent").show();
             });
         });   
     }
