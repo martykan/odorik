@@ -130,7 +130,7 @@
         <div class="ui secondary menu">
             <!-- CATEGORY SELECTOR DROPDOWN -->
             <div class="item fitted">
-                <div class="ui blue floating button dropdown">
+                <div class="ui blue floating button dropdown" id="categorySelector">
                     <div class="text"></div><i class="dropdown icon"></i>
                     <div class="menu">
                         <script>
@@ -688,6 +688,7 @@
         $('.ui.dropdown').dropdown({
             onChange: function(value, text, $selectedItem) {
                 localStorage.setItem("prevCategory", value);
+                $('#categorySelector').addClass("loading");
                 if(value == "speedDials"){
                     reloadContacts();
                     $(".callHistoryContent").hide();
@@ -835,6 +836,8 @@
                 if ($(".ui.container").css("display") == "none") {
                     $(".ui.container").transition("fade", setDuration + "ms");
                 }
+
+                $('#categorySelector').removeClass("loading");
 
                 if(enableInlineEditing){
                     $("#tableContacts td").dblclick(function(){
@@ -1492,6 +1495,8 @@
                         $(".ui.container").transition("fade", setDuration + "ms");
                     }
                 }
+
+                $('#categorySelector').removeClass("loading");
             });
         });   
     }
