@@ -125,9 +125,10 @@
         <!-- TITLE -->
         <h1 class="ui header">
             <br>Odorik.cz<div class="ui orange label">BETA 1.6</div>
+            <span style="float: right; color: #333" class="sub header" id="credit"></span>
         </h1>
         <!-- MENU -->
-        <div class="ui secondary menu">
+        <div class="ui   secondary menu">
             <!-- CATEGORY SELECTOR DROPDOWN -->
             <div class="item fitted">
                 <div class="ui blue floating button dropdown" id="categorySelector">
@@ -719,8 +720,21 @@
         logInDialog(); // Show login dialog
     }
 
+    var preload = false;
+
     // Initialization
     function init() {
+        $.ajax({ 
+            url: 'https://www.odorik.cz/api/v1/balance',
+            type: 'GET',
+            data: {
+                user: APIuser,
+                password: APIpass
+            } 
+        }).done(function (data, textStatus, xhr) { 
+            $("#credit").html("<b>Kredit: </b>"+ data +" Kč");
+        });
+
         updateLines();
         $("input[name=call-number]").val(defaultCallbackNumber);
 
@@ -829,7 +843,9 @@
 
                 }
                 $("#tableContacts").html(outstring);
-                if ($(".ui.container").css("display") == "none") {
+
+                if ($(".ui.container").css("display") == "none" && preload) {
+                    preload = true;
                     $(".ui.container").transition("fade", setDuration + "ms");
                 }
 
@@ -1512,22 +1528,28 @@
         for (var i = 0; i < result.length; i++) {
                 outstring += '<tr class="';
                 if(result[i].status == "missed"){
-                    outstring += "error"
+                    outstring += "error";
                 }
-                outstring += '"><td><span class="hasPopup" data-html="<b>ID:</b> '+result[i].id+'">';
+                outstring += '"';
+                outstring += ' data-id="'+ result[i]. id +'" ';
+                if(result[i].redirection_parent_id != "" && typeof result[i].redirection_parent_id != "undefined"){
+                    outstring += ' data-redirection-id="'+ result[i].redirection_parent_id +'"';
+                }
+                outstring += '><td><span class="hasPopup" data-html="<b>ID:</b> '+result[i].id+'">';
                 if(result[i].direction == "redirected"){
                     outstring += '<i class="forward mail icon"></i> Přesměrovaný';
                 }
                 if(result[i].direction == "in"){
-                    outstring += '<i class="right arrow icon"></i> Příchozí';
+                    outstring += '<div class="ui teal ribbon label"><i class="right arrow icon"></i></div> Příchozí';
                 }
                 if(result[i].direction == "out"){
-                   outstring += '<i class="left arrow icon"></i> Odchozí';
+                   outstring += '<div class="ui yellow ribbon label"><i class="left arrow icon"></i></div> Odchozí';
                 }
                 if(result[i].status == "missed"){
                     outstring += " nepřijatý"
                 }
-                outstring += '</span></td><td>'+moment(result[i].date).utcOffset(1).format("D.M.YYYY H:mm:ss")+'</td><td>'+getSpeedDialName(result[i].source_number)+'</td><td><span class="hasPopup" data-html="<b>Podrobnosti:</b> '+result[i].destination_name+'">'+getSpeedDialName(result[i].destination_number)+'</span></td><td><span class="hasPopup" data-html="<b>Délka vyzvánění:</b> '+result[i].ringing_length+' s">'+result[i].length+' s</span></td><td><span class="hasPopup" data-html="<b>Minutová sazba:</b> '+result[i].price_per_minute+' Kč<br><b>Zbylý kredit:</b> '+result[i].balance_after+' Kč">'+result[i].price+' Kč</span></td><td>'+result[i].line+'</td></tr>';
+                outstring += '</span> ';
+                outstring += '</td><td>'+moment(result[i].date).utcOffset(1).format("D.M.YYYY H:mm:ss")+'</td><td>'+getSpeedDialName(result[i].source_number)+'</td><td><span class="hasPopup" data-html="<b>Podrobnosti:</b> '+result[i].destination_name+'">'+getSpeedDialName(result[i].destination_number)+'</span></td><td><span class="hasPopup" data-html="<b>Délka vyzvánění:</b> '+result[i].ringing_length+' s">'+result[i].length+' s</span></td><td><span class="hasPopup" data-html="<b>Minutová sazba:</b> '+result[i].price_per_minute+' Kč<br><b>Zbylý kredit:</b> '+result[i].balance_after+' Kč">'+result[i].price+' Kč</span></td><td>'+result[i].line+'</td></tr>';
         }
         $("#tableCalls").html(outstring);
         $(".hasPopup").popup(); 
