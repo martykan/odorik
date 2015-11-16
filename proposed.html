@@ -1009,7 +1009,7 @@
                 if (typeof result.errors != "undefined") {
                     parseErrors(result);
                 }
-                setTimeout("reload();", 500);
+                setTimeout("reloadContacts();", 500);
             }
         });
     }
@@ -1299,7 +1299,7 @@
                         });
                     }
                 }
-                setTimeout("reload();", 1200);
+                setTimeout("reloadContacts();", 1200);
             }
         }).modal("show");
     }
@@ -1386,6 +1386,9 @@
 
     // Reload Calls
     function reloadCalls(){
+        if(page < 1) {
+            page = 1;
+        }
         callsAmount(function (data, textStatus, xhr) { 
             totalCalls = xhr.getResponseHeader('Odorik-Pages');
             var dataSet = {
@@ -1414,8 +1417,14 @@
                 data: dataSet
             }).done(function (data, textStatus, xhr) {                
                 totalPages = xhr.getResponseHeader('Odorik-Pages');
-
-                if(data.length < 24 && page == 1 && totalPages > 1){
+                if($("select[name=call-order]").val() == "newest" && typeof stripped[page] != "undefined"){
+                    data = data.filter(function(current){
+                        return stripped[page].filter(function(current_b){
+                            return current_b.id == current.id
+                        }).length == 0
+                    });
+                }
+                if(data.length < 24 && page != totalPages){
                     var dataSet = {
                         user: APIuser,
                         password: APIpass,
@@ -1444,7 +1453,7 @@
                         data = data.reverse();
                         data2 = data2.reverse();
                         data2 = data2.slice(0, 24 - data.length);
-                        stripped = data2;
+                        stripped[page] = data2;
                         data = data.concat(data2);
                         populateCallsTable(data);
 
@@ -1468,11 +1477,6 @@
                 }
                 else {
                     if($("select[name=call-order]").val() == "newest"){
-                        data = data.filter(function(current){
-                            return stripped.filter(function(current_b){
-                                return current_b.id == current.id
-                            }).length == 0
-                        });
                         data = data.reverse();
                     }
                     populateCallsTable(data);
@@ -1510,7 +1514,7 @@
                 if(result[i].status == "missed"){
                     outstring += "error"
                 }
-                outstring += '"><td>';
+                outstring += '"><td><span class="hasPopup" data-html="<b>ID:</b> '+result[i].id+'">';
                 if(result[i].direction == "redirected"){
                     outstring += '<i class="forward mail icon"></i> Přesměrovaný';
                 }
@@ -1523,7 +1527,7 @@
                 if(result[i].status == "missed"){
                     outstring += " nepřijatý"
                 }
-                outstring += '</td><td>'+moment(result[i].date).utcOffset(1).format("D.M.YYYY H:mm:ss")+'</td><td>'+getSpeedDialName(result[i].source_number)+'</td><td><span class="hasPopup" data-html="<b>Podrobnosti:</b> '+result[i].destination_name+'">'+getSpeedDialName(result[i].destination_number)+'</span></td><td><span class="hasPopup" data-html="<b>Délka vyzvánění:</b> '+result[i].ringing_length+' s">'+result[i].length+' s</span></td><td><span class="hasPopup" data-html="<b>Minutová sazba:</b> '+result[i].price_per_minute+' Kč<br><b>Zbylý kredit:</b> '+result[i].balance_after+' Kč">'+result[i].price+' Kč</span></td><td>'+result[i].line+'</td></tr>';
+                outstring += '</span></td><td>'+moment(result[i].date).utcOffset(1).format("D.M.YYYY H:mm:ss")+'</td><td>'+getSpeedDialName(result[i].source_number)+'</td><td><span class="hasPopup" data-html="<b>Podrobnosti:</b> '+result[i].destination_name+'">'+getSpeedDialName(result[i].destination_number)+'</span></td><td><span class="hasPopup" data-html="<b>Délka vyzvánění:</b> '+result[i].ringing_length+' s">'+result[i].length+' s</span></td><td><span class="hasPopup" data-html="<b>Minutová sazba:</b> '+result[i].price_per_minute+' Kč<br><b>Zbylý kredit:</b> '+result[i].balance_after+' Kč">'+result[i].price+' Kč</span></td><td>'+result[i].line+'</td></tr>';
         }
         $("#tableCalls").html(outstring);
         $(".hasPopup").popup(); 
