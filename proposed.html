@@ -505,6 +505,37 @@
             </div>
         </div>
     </div>
+    <!-- REDIRECTIONS MODAL -->
+    <div class="ui modal" id="redirectionsModal">
+        <i class="close icon"></i>
+        <div class="header">
+            Seznam přesměrování během hovru
+        </div>
+        <div class="content">
+            <div>
+                <!-- TABLE -->
+                <table class="ui celled table">
+                    <thead>
+                        <tr>
+                            <th>Datum</th>
+                            <th>Odkud</th>
+                            <th>Kam</th>
+                            <th>Délka</th>
+                            <th>Cena</th>
+                            <th>Linka</th>
+                        </tr>
+                    </thead>
+                    <tbody id="tableRedirects">
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <div class="actions">
+            <div class="ui black deny button">
+                Zavřít
+            </div>
+        </div>
+    </div>
     <!-- DIMMERS -->
     <div class="ui page dimmer">
       <div class="content">
@@ -557,7 +588,8 @@
     var totalCalls = 1;
     var fromDate;
     var toDate;
-    var stripped = [];
+    var callHistory = [];
+    var redirectedCalls = [];
 
     // Detect if user is logged in 
     function loggedIn() {
@@ -686,15 +718,21 @@
 
     // Initialize dropdown with section selection
     function initDropdown(){
+        var firstRun = true;
         $('.ui.dropdown').dropdown({
             onChange: function(value, text, $selectedItem) {
-                localStorage.setItem("prevCategory", value);
-                $('#categorySelector').addClass("loading");
-                if(value == "speedDials"){
-                    reloadContacts();
+                if(!firstRun){
+                    localStorage.setItem("prevCategory", value);
+                    $('#categorySelector').addClass("loading");
+                    if(value == "speedDials"){
+                        reloadContacts();
+                    }
+                    if(value == "callHistory"){
+                        loadCalls();
+                    }
                 }
-                if(value == "callHistory"){
-                    reloadCalls();
+                else {
+                    firstRun = false;
                 }
             }
         });
@@ -742,33 +780,18 @@
             localStorage.setItem("prevCategory", "speedDials");
         }
 
-        // Preload
-        $.ajax({ 
-            url: 'https://www.odorik.cz/api/v1/calls.json',
-            type: 'GET',
-            data: {
-                user: APIuser,
-                password: APIpass,
-                from: fromDate,
-                to: toDate,
-                page_size: 24,
-                page: page
-            } 
-        }).done(function (data, textStatus, xhr) { 
-            totalPages = xhr.getResponseHeader('Odorik-Pages');
-            // Load contacts/calls
+        // Load contacts/calls
+        reloadContacts();
+        if(enableContacts == true && enableCallHisory == false || enableContacts == true && enableCallHisory == true && localStorage.prevCategory == "speedDials") {
+            $(".ui.dropdown").dropdown("set selected", "speedDials");
+            $(".callHistoryContent").hide();
             reloadContacts();
-            if(enableContacts == true && enableCallHisory == false || enableContacts == true && enableCallHisory == true && localStorage.prevCategory == "speedDials") {
-                $(".ui.dropdown").dropdown("set selected", "speedDials");
-                $(".callHistoryContent").hide();
-                reloadContacts();
-            }
-            else {
-                $(".ui.dropdown").dropdown("set selected", "callHistory");
-                $(".speedDialsContent").hide();
-                reloadCalls();
-            }
-        });
+        }
+        else {
+            $(".ui.dropdown").dropdown("set selected", "callHistory");
+            $(".speedDialsContent").hide();
+            loadCalls();
+        }
     }
 
     // Shows "dimmer" element - for displaying error messages
@@ -1352,7 +1375,7 @@
         else {
             localStorage.setItem("lastDate", start.format('D.M.YYYY') + ' - ' + end.format('D.M.YYYY'));
         }
-        reloadCalls();
+        loadCalls();
     };
 
     var optionSet = {
@@ -1369,11 +1392,11 @@
             ranges: {
                 'Dnes': [moment(), moment()],
                 'Včera': [moment().subtract(1, 'days'), moment().subtract(1, 'days')],
+                'Předevčírem': [moment().subtract(2, 'days'), moment().subtract(2, 'days')],
                 'Posledních 7 dní': [moment().subtract(6, 'days'), moment()],
                 'Posledních 30 dní': [moment().subtract(29, 'days'), moment()],
                 'Tento měsíc': [moment().startOf('month'), moment().endOf('month')],
                 'Minulý měsíc': [moment().subtract(1, 'month').startOf('month'), moment().subtract(1, 'month').endOf('month')],
-                'Tento rok': [moment().startOf('year'), moment().endOf('year')]
             },
                 opens: 'right',
                 buttonClasses: ['ui compact button'],
@@ -1405,15 +1428,36 @@
         if(page < 1) {
             page = 1;
         }
+
+        var startRange = Number((page-1)*24);
+        var endRange = page*24;
+        var data = callHistory.slice(startRange, endRange);
+
+        if(data.length == 24){
+            $("#nextPage").removeClass("disabled");
+        }
+        else {
+            $("#nextPage").addClass("disabled");
+        }
+        if(page > 1){
+            $("#prevPage").removeClass("disabled");
+        }
+        else {
+            $("#prevPage").addClass("disabled");
+        }
+
+        populateCallsTable(data);
+    }
+
+    function loadCalls(){
+        callHistory = [];
         callsAmount(function (data, textStatus, xhr) { 
             totalCalls = xhr.getResponseHeader('Odorik-Pages');
             var dataSet = {
                 user: APIuser,
                 password: APIpass,
                 from: fromDate,
-                to: toDate,
-                page_size: 24,
-                page: page
+                to: toDate
             };
             if($("select[name=line-filter]").val() != "all"){
                 dataSet.line = $("select[name=line-filter]").val();
@@ -1424,103 +1468,45 @@
             if($("select[name=direction-filter]").val() != "all"){
                 dataSet.direction = $("select[name=direction-filter]").val();
             }
-            if($("select[name=call-order]").val() == "newest"){
-                dataSet.page = totalPages - page + 1;
-            }
+
             $.ajax({ 
                 url: 'https://www.odorik.cz/api/v1/calls.json',
                 type: 'GET',
                 data: dataSet
             }).done(function (data, textStatus, xhr) {                
-                totalPages = xhr.getResponseHeader('Odorik-Pages');
-                if($("select[name=call-order]").val() == "newest" && typeof stripped[page] != "undefined"){
-                    data = data.filter(function(current){
-                        return stripped[page].filter(function(current_b){
-                            return current_b.id == current.id
-                        }).length == 0
-                    });
+                if($("select[name=call-order]").val() == "newest"){
+                    data = data.reverse();
                 }
-                if(data.length < 24 && page != totalPages){
-                    var dataSet = {
-                        user: APIuser,
-                        password: APIpass,
-                        from: fromDate,
-                        to: toDate,
-                        page_size: 24,
-                        page: page
-                    };
-                    if($("select[name=line-filter]").val() != "all"){
-                        dataSet.line = $("select[name=line-filter]").val();
-                    }
-                    if($("select[name=state-filter]").val() != "all"){
-                        dataSet.status = $("select[name=state-filter]").val();
-                    }
-                    if($("select[name=direction-filter]").val() != "all"){
-                        dataSet.direction = $("select[name=direction-filter]").val();
-                    }
-                    if($("select[name=call-order]").val() == "newest"){
-                        dataSet.page = totalPages - page;
-                    }
-                    $.ajax({ 
-                        url: 'https://www.odorik.cz/api/v1/calls.json',
-                        type: 'GET',
-                        data: dataSet
-                    }).done(function (data2, textStatus, xhr) {
-                        data = data.reverse();
-                        data2 = data2.reverse();
-                        data2 = data2.slice(0, 24 - data.length);
-                        stripped[page] = data2;
-                        data = data.concat(data2);
-                        populateCallsTable(data);
 
-                        if(page < parseInt(totalPages)){
-                            $("#nextPage").removeClass("disabled");
-                        }
-                        else {
-                            $("#nextPage").addClass("disabled");
-                        }
-                        if(page > 1){
-                            $("#prevPage").removeClass("disabled");
-                        }
-                        else {
-                            $("#prevPage").addClass("disabled");
-                        }
+                var finalData = [];
 
-                        if ($(".ui.container").css("display") == "none") {
-                            $(".ui.container").transition("fade", setDuration + "ms");
-                        }
-                    });
-                }
-                else {
-                    if($("select[name=call-order]").val() == "newest"){
-                        data = data.reverse();
-                    }
-                    populateCallsTable(data);
-                    
-                    if(page < parseInt(totalPages)){
-                        $("#nextPage").removeClass("disabled");
+                for(var i = 0; i < data.length;i++){
+                    if(data[i].direction != "redirected") {
+                        finalData.push(data[i]);
                     }
                     else {
-                        $("#nextPage").addClass("disabled");
+                        if($.inArray(data[i].redirection_parent_id, redirectedCalls) == -1) {
+                            redirectedCalls.push(data[i].redirection_parent_id);
+                        }
                     }
-                    if(page > 1){
-                        $("#prevPage").removeClass("disabled");
-                    }
-                    else {
-                        $("#prevPage").addClass("disabled");
-                    }
+                }
 
-                    if ($(".ui.container").css("display") == "none") {
-                        $(".ui.container").transition("fade", setDuration + "ms");
-                    }
+                data = finalData;
+
+                callHistory = callHistory.concat(data);
+
+                if ($(".ui.container").css("display") == "none") {
+                    $(".ui.container").transition("fade", setDuration + "ms");
                 }
 
                 $('#categorySelector').removeClass("loading");
 
                 $(".speedDialsContent").hide();
                 $(".callHistoryContent").show();
+
+                reloadCalls();
             });
-        });   
+        }); 
     }
 
     function populateCallsTable(result){
@@ -1535,19 +1521,31 @@
                 if(result[i].redirection_parent_id != "" && typeof result[i].redirection_parent_id != "undefined"){
                     outstring += ' data-redirection-id="'+ result[i].redirection_parent_id +'"';
                 }
-                outstring += '><td><span class="hasPopup" data-html="<b>ID:</b> '+result[i].id+'">';
+                outstring += '><td>';
+                
+                if($.inArray(result[i].id, redirectedCalls) != -1){
+                    outstring += '<a onclick="redirectionsModal('+"'"+result[i].id+"'"+','+"'"+result[i].date+"'"+');" class="ui teal ribbon label"><i class="forward mail icon"></i></a>';
+                }
+
+                outstring += '<span class="hasPopup" data-html="<b>ID:</b> '+result[i].id+'">';
+
                 if(result[i].direction == "redirected"){
                     outstring += '<i class="forward mail icon"></i> Přesměrovaný';
                 }
                 if(result[i].direction == "in"){
-                    outstring += '<div class="ui teal ribbon label"><i class="right arrow icon"></i></div> Příchozí';
+                    outstring += '<i class="right arrow icon"></i> Příchozí';
                 }
                 if(result[i].direction == "out"){
-                   outstring += '<div class="ui yellow ribbon label"><i class="left arrow icon"></i></div> Odchozí';
+                   outstring += '<i class="left arrow icon"></i> Odchozí';
                 }
                 if(result[i].status == "missed"){
-                    outstring += " nepřijatý"
+                    outstring += " nepřijatý";
                 }
+
+                if($.inArray(result[i].id, redirectedCalls) != -1){
+                    outstring += ' přesměrovaný';
+                }
+                
                 outstring += '</span> ';
                 outstring += '</td><td>'+moment(result[i].date).utcOffset(1).format("D.M.YYYY H:mm:ss")+'</td><td>'+getSpeedDialName(result[i].source_number)+'</td><td><span class="hasPopup" data-html="<b>Podrobnosti:</b> '+result[i].destination_name+'">'+getSpeedDialName(result[i].destination_number)+'</span></td><td><span class="hasPopup" data-html="<b>Délka vyzvánění:</b> '+result[i].ringing_length+' s">'+result[i].length+' s</span></td><td><span class="hasPopup" data-html="<b>Minutová sazba:</b> '+result[i].price_per_minute+' Kč<br><b>Zbylý kredit:</b> '+result[i].balance_after+' Kč">'+result[i].price+' Kč</span></td><td>'+result[i].line+'</td></tr>';
         }
@@ -1562,8 +1560,43 @@
             return allNames[$.inArray(number, allNumbers)] + " (" + number + ")";
         }
         else {
-            return number;        
+            return number;
         }
+    }
+
+    // Redirections dialog
+    function redirectionsModal(id, time){
+        $.ajax({ 
+            url: 'https://www.odorik.cz/api/v1/calls.json',
+            type: 'GET',
+            data: {
+                user: APIuser,
+                password: APIpass,
+                from: moment(time).subtract(2, "hours").toISOString(),
+                to: moment(time).add(2, "hours").toISOString(),
+                direction: "redirected"
+            }
+        }).done(function (data, textStatus, xhr) {
+            outstring = "";
+            var result = data;
+            for (var i = 0; i < result.length; i++) {
+                if(result[i].redirection_parent_id == id) {
+                    outstring += '<tr class="';
+                    if(result[i].status == "missed"){
+                        outstring += "error";
+                    }
+                    outstring += '">';
+                    outstring += '<td>'+moment(result[i].date).utcOffset(1).format("D.M.YYYY H:mm:ss")+'</td><td>'+getSpeedDialName(result[i].source_number)+'</td><td><span class="hasPopup" data-html="<b>Podrobnosti:</b> '+result[i].destination_name+'">'+getSpeedDialName(result[i].destination_number)+'</span></td><td><span class="hasPopup" data-html="<b>Délka vyzvánění:</b> '+result[i].ringing_length+' s">'+result[i].length+' s</span></td><td><span class="hasPopup" data-html="<b>Minutová sazba:</b> '+result[i].price_per_minute+' Kč<br><b>Zbylý kredit:</b> '+result[i].balance_after+' Kč">'+result[i].price+' Kč</span></td><td>'+result[i].line+'</td></tr>';
+                }
+            }
+
+            $("#tableRedirects").html(outstring);
+            $(".hasPopup").popup(); 
+            $("#redirectionsModal").modal({
+                duration: setDuration,
+                blurring: true
+            }).modal('show');
+        });
     }
 
     // Filter dialog
@@ -1573,7 +1606,7 @@
             blurring: true,
             onApprove: function(){
                 localStorage.setItem("order", $("select[name=call-order]").val());
-                reloadCalls();
+                loadCalls();
             }
         }).modal('show');
     }
