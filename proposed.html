@@ -867,8 +867,7 @@
                 }
                 $("#tableContacts").html(outstring);
 
-                if ($(".ui.container").css("display") == "none" && preload) {
-                    preload = true;
+                if ($(".ui.container").css("display") == "none") {
                     $(".ui.container").transition("fade", setDuration + "ms");
                 }
 
