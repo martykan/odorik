@@ -1225,7 +1225,7 @@
         input = input.replace("+", "00");
 
         if (input.length != 6) {
-            if (input.indexOf("00") != 0) {
+            if (input.indexOf("00") != 0 && !isNaN(input.substr(0,2))) {
                 input = "00420" + input;
             }
         }
