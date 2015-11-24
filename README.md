@@ -72,7 +72,11 @@ Povolit animace
 Přednastavené číslo pro callback
 
     var defaultCallbackNumber = "0085023815827"; // nastaví výchozí číslo pro callback na 0085023815827
+    
+Počet položek na stránku
 
-Povolit tmavé téma - vhodné pro osoby se zrakovými problémy
+    var pageLength = 24; // nastaví počet položek na stránku na 24
+
+Povolit tmavé téma
 
     var darkTheme = true; // povolí tmavé téma
