@@ -541,7 +541,7 @@
         </div>
     </div>
     <!-- DIMMERS -->
-    <div class="ui page dimmer">
+    <div class="ui page dimmer" id="dimmer">
       <div class="content">
         <div class="center">
             <h1 class="ui inverted icon header">
@@ -550,6 +550,9 @@
          </h1>
         </div>
       </div>
+    </div>
+    <div class="ui page dimmer" id="loadingDimmer">
+        <div class="ui loader"></div>
     </div>
     <!-- SCRIPTS -->
     <script src="https://code.jquery.com/jquery-1.11.3.min.js"></script>
@@ -594,6 +597,8 @@
     var toDate;
     var callHistory = [];
     var redirectedCalls = [];
+
+    var preload = false;
 
     // Detect if user is logged in 
     function loggedIn() {
@@ -733,6 +738,7 @@
                     }
                     if(value == "callHistory"){
                         loadCalls();
+                        console.log("loading contacts");
                     }
                 }
                 else {
@@ -762,10 +768,9 @@
         logInDialog(); // Show login dialog
     }
 
-    var preload = false;
-
     // Initialization
     function init() {
+        $("#loadingDimmer").dimmer("show");
         $.ajax({ 
             url: 'https://www.odorik.cz/api/v1/balance',
             type: 'GET',
@@ -785,7 +790,10 @@
         }
 
         // Load contacts/calls
+
+        preload = true;
         reloadContacts();
+
         if(enableContacts == true && enableCallHisory == false || enableContacts == true && enableCallHisory == true && localStorage.prevCategory == "speedDials") {
             $(".ui.dropdown").dropdown("set selected", "speedDials");
             $(".callHistoryContent").hide();
@@ -798,23 +806,23 @@
         }
     }
 
-    // Shows "dimmer" element - for displaying error messages
+    // Shows the "dimmer" element - for displaying error messages
     function dim(status, text) {
         if (status == true) {
-            $('.page.dimmer h1 i').removeClass("warning");
-            $('.page.dimmer h1 i').removeClass("sign");
-            $('.page.dimmer h1 i').removeClass("checkmark");
-            $('.page.dimmer h1 i').addClass("checkmark");
+            $('#dimmer h1 i').removeClass("warning");
+            $('#dimmer h1 i').removeClass("sign");
+            $('#dimmer h1 i').removeClass("checkmark");
+            $('#dimmer h1 i').addClass("checkmark");
         } else {
-            $('.page.dimmer h1 i').removeClass("warning");
-            $('.page.dimmer h1 i').removeClass("sign");
-            $('.page.dimmer h1 i').removeClass("checkmark");
-            $('.page.dimmer h1 i').addClass("warning");
-            $('.page.dimmer h1 i').addClass("sign");
+            $('#dimmer h1 i').removeClass("warning");
+            $('#dimmer h1 i').removeClass("sign");
+            $('#dimmer h1 i').removeClass("checkmark");
+            $('#dimmer h1 i').addClass("warning");
+            $('#dimmer h1 i').addClass("sign");
         }
-        $('.page.dimmer small').html(text);
-        setTimeout("$('.page.dimmer').dimmer('show');", 800)
-        setTimeout("$('.page.dimmer').dimmer('hide');", 2100);
+        $('#dimmer small').html(text);
+        setTimeout("$('#dimmer').dimmer('show');", 800)
+        setTimeout("$('#dimmer').dimmer('hide');", 2100);
     }
 
     /*
@@ -872,7 +880,13 @@
                 $("#tableContacts").html(outstring);
 
                 if ($(".ui.container").css("display") == "none") {
-                    $(".ui.container").transition("fade", setDuration + "ms");
+                    if(preload == false){
+                        $("#loadingDimmer").dimmer("hide");
+                        $(".ui.container").transition("fade", setDuration + "ms");
+                    }
+                    else {
+                        preload = false;
+                    }
                 }
 
                 $('#categorySelector').removeClass("loading");
@@ -1499,6 +1513,7 @@
                 callHistory = callHistory.concat(data);
 
                 if ($(".ui.container").css("display") == "none") {
+                    $("#loadingDimmer").dimmer("hide");
                     $(".ui.container").transition("fade", setDuration + "ms");
                 }
 
@@ -1530,7 +1545,7 @@
                     outstring += '<a onclick="redirectionsModal('+"'"+result[i].id+"'"+','+"'"+result[i].date+"'"+');" class="ui teal ribbon label"><i class="forward mail icon"></i></a>';
                 }
 
-                outstring += '<span class="hasPopup" data-html="<b>ID:</b> '+result[i].id+'">';
+                outstring += '<span class="hasClickPopup" data-html="<b>ID:</b> '+result[i].id+'">';
 
                 if(result[i].direction == "redirected"){
                     outstring += '<i class="forward mail icon"></i> Přesměrovaný';
@@ -1553,6 +1568,7 @@
                 outstring += '</td><td>'+moment(result[i].date).utcOffset(1).format("D.M.YYYY H:mm:ss")+'</td><td>'+getSpeedDialName(result[i].source_number)+'</td><td><span class="hasPopup" data-html="<b>Podrobnosti:</b> '+result[i].destination_name+'">'+getSpeedDialName(result[i].destination_number)+'</span></td><td><span class="hasPopup" data-html="<b>Délka vyzvánění:</b> '+result[i].ringing_length+' s">'+result[i].length+' s</span></td><td><span class="hasPopup" data-html="<b>Minutová sazba:</b> '+result[i].price_per_minute+' Kč<br><b>Zbylý kredit:</b> '+result[i].balance_after+' Kč">'+result[i].price+' Kč</span></td><td>'+result[i].line+'</td></tr>';
         }
         $("#tableCalls").html(outstring);
+        $(".hasClickPopup").popup({ on: "click" }); 
         $(".hasPopup").popup(); 
         $("#pageNumber").text(page);
     }
