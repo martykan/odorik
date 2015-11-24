@@ -26,6 +26,11 @@
     // př. var hideLockedNumbers = true // nezobrazí vůbec 
     var hideLockedNumbers = true;
 
+    // Povolené linky :: čárkou oddělený seznam linek, které jsou uživateli dostupné //
+    // Pokud je pole prázdné, tak jsou všechny linky povolené
+    // př. var allowedLines = "300100,300200"; // Povolí jen linku 300100 a 300200
+    var allowedLines = "";
+
     // Povolit přidávání nových čísel :: true = povolit, false = zakázat //
     // př. var enableAdding = false // zakáže přidávání
     var enableAdding = true;
@@ -60,19 +65,22 @@
     var enableInlineEditing = true;
 
     // Povolit pokročilé filrování  :: true = povolit, false = zakázat //
-    // př. var enableFilters = false // zakáže filtry
+    // př. var enableFilters = false; // zakáže filtry
     var enableFilters = true;
 
     // Povolit animace :: true = povolit, false = zakázat //
-    // př. var enableAnimations = false // zakáže animace
+    // př. var enableAnimations = false; // zakáže animace
     var enableAnimations = true;
 
     // Přednastavené číslo pro callback //
     // př. var defaultCallbackNumber = "0085023815827"; // nastaví výchozí číslo pro callback na 0085023815827
     var defaultCallbackNumber = "";
 
+    // Počet položek na stránku  //
+    // př. var pageLength = 24; // nastaví počet položek na stránku na 24
+    var pageLength = 24;
+
     // Povolit tmavé téma :: true = povolit, false = zakázat //
-    // Vhodné pro osoby se zrakovými problémy //
     // př. var darkTheme = true // povolí tmavé téma
     var darkTheme = false;
 
@@ -1446,11 +1454,11 @@
             page = 1;
         }
 
-        var startRange = Number((page-1)*24);
-        var endRange = page*24;
+        var startRange = Number((page-1)*pageLength);
+        var endRange = page*pageLength;
         var data = callHistory.slice(startRange, endRange);
 
-        if(data.length == 24){
+        if(data.length == pageLength){
             $("#nextPage").removeClass("disabled");
         }
         else {
