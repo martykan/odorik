@@ -14,6 +14,16 @@ API uživatelské jméno a heslo - automatické přihlášení
 
     var APIuser = "1234560";
     var APIpass = "abc9de99";
+  
+Povolit sekci rychlé kontakty
+
+    var enableSpeedDials = false; // zakáže sekci rychlých kontaktů
+
+Povolit sekci historie volání
+
+    var enableCallHisory = false; // zakáže sekci historie volání
+
+>Musí být povolena alespoň jedna sekce
 
 Zamknutá čísla - čárkou oddělený seznam zkratek (klapek), které nejde editovat
 
