@@ -81,6 +81,7 @@
     var pageLength = 24;
 
     // Povolit tmavé téma :: true = povolit, false = zakázat //
+    // Vhodné pro osoby se zrakovými problémy //
     // př. var darkTheme = true // povolí tmavé téma
     var darkTheme = false;
 
@@ -1506,12 +1507,14 @@
                 var finalData = [];
 
                 for(var i = 0; i < data.length;i++){
-                    if(data[i].direction != "redirected") {
-                        finalData.push(data[i]);
-                    }
-                    else {
-                        if($.inArray(data[i].redirection_parent_id, redirectedCalls) == -1) {
-                            redirectedCalls.push(data[i].redirection_parent_id);
+                    if($.inArray(data[i].line + "", allowedLines.split(",")) != -1 || allowedLines == ""){
+                        if(data[i].direction != "redirected") {
+                            finalData.push(data[i]);
+                        }
+                        else {
+                            if($.inArray(data[i].redirection_parent_id, redirectedCalls) == -1) {
+                                redirectedCalls.push(data[i].redirection_parent_id);
+                            }
                         }
                     }
                 }
