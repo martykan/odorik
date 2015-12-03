@@ -76,6 +76,10 @@
     // př. var defaultCallbackNumber = "0085023815827"; // nastaví výchozí číslo pro callback na 0085023815827
     var defaultCallbackNumber = "";
 
+    // Přednastavená linka pro callback //
+    // př. var defaultCallbackLine = "623400"; // nastaví výchozí linku pro callback na 623400
+    var defaultCallbackLine = "";
+
     // Počet položek na stránku  //
     // př. var pageLength = 24; // nastaví počet položek na stránku na 24
     var pageLength = 24;
@@ -385,6 +389,12 @@
                         <input type="text" name="call-number" placeholder="Číslo">
                         <!--<div class="ui button" onclick=""><i class="user icon"></i>Kontakty</div>-->
                     </div>
+                </div>
+                <div class="field">
+                    <label>Linka pro callback</label>
+                    <select class="ui dropdown" name="call-line">
+                        <option value="none">Žádná</option>
+                    </select>
                 </div>
             </form>
         </div>
@@ -1088,23 +1098,29 @@
             $('input[name="call-target"]').val(number);
         }
 
+        if(defaultCallbackLine != "") {
+            $('select[name="call-line"]').dropdown("set selected", defaultCallbackLine);
+        }
+
         $('#callModal').modal({
             duration: setDuration,
             blurring: true,
             onApprove: function() {
-                line = $('select[name="call-line"]').val();
+                var properties = {
+                    user: APIuser,
+                    password: APIpass,
+                    caller: $('input[name="call-number"]').val(),
+                    recipient: number,
+                };
+                if($('select[name="call-line"]').val() != "none") {
+                    properties.line = $('select[name="call-line"]').val();
+                }
                 requestURL = 'https://www.odorik.cz/api/v1/callback';
 
-                $.ajax({
+                /*$.ajax({
                     url: requestURL,
                     type: 'POST',
-                    data: {
-                        user: APIuser,
-                        password: APIpass,
-                        caller: $('input[name="call-number"]').val(),
-                        recipient: number,
-                        line: line
-                    },
+                    data: properties,
                     success: function(result) {
                         if (result.indexOf("error") != 0) {
                             dim(true, "Callback objednán");
@@ -1112,7 +1128,7 @@
                             dim(false, "Došlo k chybě. Zkontrolujte zadané číslo.");
                         }
                     }
-                });
+                });*/
             }
         }).modal('show');
     }
@@ -1659,6 +1675,7 @@
                 var data = result.split(",");
                 for(var i = 0; i < data.length; i++){
                     $("select[name=line-filter]").append('<option value="'+data[i]+'">'+data[i]+'</option>');
+                    $("select[name=call-line]").append('<option value="'+data[i]+'">'+data[i]+'</option>');
                 }
             }
         });
