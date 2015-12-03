@@ -220,7 +220,7 @@
                         <a class="icon disabled item" id="prevPage" onclick="if(!$(this).hasClass('disabled')){page-=1;reloadCalls();}">
                           <i class="left chevron icon"></i>
                         </a>
-                        <a class="item" id="pageNumber">1</a>
+                        <a class="item" id="pageNumber"></a>
                         <a class="icon disabled item" id="nextPage" onclick="if(!$(this).hasClass('disabled')){page+=1;reloadCalls();}">
                           <i class="right chevron icon"></i>
                         </a>
@@ -891,6 +891,7 @@
                 if ($(".ui.container").css("display") == "none") {
                     if(preload == false){
                         $("#loadingDimmer").dimmer("hide");
+                        $("#loadingDimmer").remove();
                         $(".ui.container").transition("fade", setDuration + "ms");
                     }
                     else {
@@ -1525,6 +1526,7 @@
 
                 if ($(".ui.container").css("display") == "none") {
                     $("#loadingDimmer").dimmer("hide");
+                    $("#loadingDimmer").remove();
                     $(".ui.container").transition("fade", setDuration + "ms");
                 }
 
@@ -1581,7 +1583,7 @@
         $("#tableCalls").html(outstring);
         $(".hasClickPopup").popup({ on: "click" }); 
         $(".hasPopup").popup(); 
-        $("#pageNumber").text(page);
+        $("#pageNumber").text(page + " z " + Math.ceil(callHistory.length / pageLength));
     }
 
     // Get name of the contact
@@ -1643,6 +1645,9 @@
 
     // Update lines
     function updateLines(){
+        if(allowedLines != ""){
+            $("select[name=line-filter]").parent().addClass("disabled");
+        }
         $.ajax({
             url: 'https://www.odorik.cz/api/v1/lines',
             type: 'GET',
