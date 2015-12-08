@@ -491,11 +491,21 @@
                         <option value="oldest">Od nejstaršího</option>
                     </select>
                 </div>
-                <div class="field">
-                    <label>Linka</label>
-                    <select class="ui fluid dropdown" name="line-filter">
+                <div class="two fields">
+                    <div class="field">
+                        <label>Linka</label>
+                        <select class="ui fluid dropdown" name="line-filter">
                         <option value="all">Vše</option>
                     </select>
+                    </div>
+                    <div class="field">
+                        <label>Stav</label>
+                        <select class="ui fluid dropdown" name="state-filter">
+                            <option value="all">Vše</option>
+                            <option value="missed">Zmeškané</option>
+                            <option value="answered">Spojené</option>
+                        </select>
+                    </div>
                 </div>
                 <div class="two fields">
                     <div class="field">
@@ -508,11 +518,11 @@
                         </select>
                     </div>
                     <div class="field">
-                        <label>Stav</label>
-                        <select class="ui fluid dropdown" name="state-filter">
+                        <label>Cena</label>
+                        <select class="ui fluid dropdown" name="price-filter">
                             <option value="all">Vše</option>
-                            <option value="missed">Zmeškané</option>
-                            <option value="answered">Spojené</option>
+                            <option value="free">Jen zdarma</option>
+                            <option value="paid">Jen placené</option>
                         </select>
                     </div>
                 </div>
@@ -1511,6 +1521,16 @@
             if($("select[name=direction-filter]").val() != "all"){
                 dataSet.direction = $("select[name=direction-filter]").val();
             }
+            if($("select[name=price-filter]").val() != "all"){
+                if($("select[name=price-filter]").val() == "free"){
+                    dataSet.min_price = "0";
+                    dataSet.max_price = "0";
+                }
+                else {
+                    dataSet.min_price = "0";
+                    dataSet.max_price = "1000";
+                }
+            }
 
             $.ajax({ 
                 url: 'https://www.odorik.cz/api/v1/calls.json',
@@ -1518,7 +1538,12 @@
                 data: dataSet
             }).done(function (data, textStatus, xhr) {                
                 if($("select[name=call-order]").val() == "newest"){
-                    data = data.reverse();
+                    try {
+                        data = data.reverse();
+                    }
+                    catch(err) {
+                        // data jsou nulová - neobrátíme je
+                    }
                 }
 
                 var finalData = [];
