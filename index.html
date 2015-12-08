@@ -1591,12 +1591,15 @@
                 
                 outstring += '</span> ';
                 var price = result[i].price.toString().substr(0, result[i].price.toString().indexOf(".") + 3);
+                var callLength = ~~(result[i].length / 60) + " min " + (result[i].length % 60) + " s";
+                if(result[i].length < 60)
+                    callLength = (result[i].length % 60) + " s";
                 outstring += '</td><td>' + moment(result[i].date).utcOffset(1).format("DD.MM.YYYY H:mm:ss") + '</td><td>'
                     + getSpeedDialName(result[i].source_number) +'</td><td><span class="hasPopup" data-html="<b>Podrobnosti:</b> '
                     + result[i].destination_name +'">'
                     + getSpeedDialName(result[i].destination_number)+'</span></td><td><span class="hasPopup" data-html="<b>Délka vyzvánění:</b> '
                     + result[i].ringing_length +' s">'
-                    + result[i].length +' s</span></td><td><span class="hasPopup" data-html="<b>Minutová sazba:</b> '
+                    + callLength +'</span></td><td><span class="hasPopup" data-html="<b>Minutová sazba:</b> '
                     + result[i].price_per_minute +' Kč<br><b>Zbylý kredit:</b> '
                     + result[i].balance_after +' Kč">'
                     + price +' Kč</span></td><td>' + result[i].line +'</td></tr>';
