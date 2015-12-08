@@ -728,19 +728,19 @@
     // Initialize date
     function initDate(){
         if(typeof localStorage.lastDate == "undefined"){
-            $('#reportrange span').html(moment().subtract(29, 'days').format('D.M.YYYY') + ' - ' + moment().format('D.M.YYYY'));
+            $('#reportrange span').html(moment().subtract(29, 'days').format('DD.MM.YYYY') + ' - ' + moment().format('DD.MM.YYYY'));
         }
         else {
             if(localStorage.lastDate == "today"){
-                $('#reportrange span').html(moment().format('D.M.YYYY') + ' - ' + moment().format('D.M.YYYY'));
+                $('#reportrange span').html(moment().format('DD.MM.YYYY') + ' - ' + moment().format('DD.MM.YYYY'));
             }
             else{
                 $('#reportrange span').html(localStorage.lastDate);
             }
         }
 
-        fromDate = moment($('#reportrange span').text().split(" - ")[0], 'D.M.YYYY').toISOString();
-        toDate = moment($('#reportrange span').text().split(" - ")[1], 'D.M.YYYY').add(1, "days").toISOString();
+        fromDate = moment($('#reportrange span').text().split(" - ")[0], 'DD.MM.YYYY').toISOString();
+        toDate = moment($('#reportrange span').text().split(" - ")[1], 'DD.MM.YYYY').add(1, "days").toISOString();
     }
     initDate();
 
@@ -1411,19 +1411,19 @@
     var cb = function(start, end, label) {
         fromDate = start.toISOString();
         toDate = end.toISOString();
-        $('#reportrange span').html(start.format('D.M.YYYY') + ' - ' + end.format('D.M.YYYY'));
-        if(moment().format('D.M.YYYY') == start.format('D.M.YYYY')){
+        $('#reportrange span').html(start.format('DD.MM.YYYY') + ' - ' + end.format('DD.MM.YYYY'));
+        if(moment().format('DD.MM.YYYY') == start.format('D.MM.YYYY')){
             localStorage.setItem("lastDate", "today");
         }
         else {
-            localStorage.setItem("lastDate", start.format('D.M.YYYY') + ' - ' + end.format('D.M.YYYY'));
+            localStorage.setItem("lastDate", start.format('DD.MM.YYYY') + ' - ' + end.format('DD.MM.YYYY'));
         }
         loadCalls();
     };
 
     var optionSet = {
-            startDate: moment($('#reportrange span').text().split(" - ")[0], 'D.M.YYYY'),
-            endDate: moment($('#reportrange span').text().split(" - ")[1], 'D.M.YYYY'),
+            startDate: moment($('#reportrange span').text().split(" - ")[0], 'DD.MM.YYYY'),
+            endDate: moment($('#reportrange span').text().split(" - ")[1], 'DD.MM.YYYY'),
             dateLimit: {
                 days: 60
             },
@@ -1445,7 +1445,7 @@
                 buttonClasses: ['ui compact button'],
                 applyClass: 'primary small',
                 cancelClass: 'small',
-                format: 'D.M.YYYY',
+                format: 'DD.MM.YYYY',
                 separator: ' - ',
             locale: {
                 applyLabel: 'Uložit',
@@ -1588,13 +1588,9 @@
                 if(result[i].status == "missed"){
                     outstring += " nepřijatý";
                 }
-
-                if($.inArray(result[i].id, redirectedCalls) != -1){
-                    outstring += ' přesměrovaný';
-                }
                 
                 outstring += '</span> ';
-                outstring += '</td><td>'+moment(result[i].date).utcOffset(1).format("D.M.YYYY H:mm:ss")+'</td><td>'+getSpeedDialName(result[i].source_number)+'</td><td><span class="hasPopup" data-html="<b>Podrobnosti:</b> '+result[i].destination_name+'">'+getSpeedDialName(result[i].destination_number)+'</span></td><td><span class="hasPopup" data-html="<b>Délka vyzvánění:</b> '+result[i].ringing_length+' s">'+result[i].length+' s</span></td><td><span class="hasPopup" data-html="<b>Minutová sazba:</b> '+result[i].price_per_minute+' Kč<br><b>Zbylý kredit:</b> '+result[i].balance_after+' Kč">'+result[i].price+' Kč</span></td><td>'+result[i].line+'</td></tr>';
+                outstring += '</td><td>'+moment(result[i].date).utcOffset(1).format("DD.MM.YYYY H:mm:ss")+'</td><td>'+getSpeedDialName(result[i].source_number)+'</td><td><span class="hasPopup" data-html="<b>Podrobnosti:</b> '+result[i].destination_name+'">'+getSpeedDialName(result[i].destination_number)+'</span></td><td><span class="hasPopup" data-html="<b>Délka vyzvánění:</b> '+result[i].ringing_length+' s">'+result[i].length+' s</span></td><td><span class="hasPopup" data-html="<b>Minutová sazba:</b> '+result[i].price_per_minute+' Kč<br><b>Zbylý kredit:</b> '+result[i].balance_after+' Kč">'+result[i].price+' Kč</span></td><td>'+result[i].line+'</td></tr>';
         }
         $("#tableCalls").html(outstring);
         $(".hasClickPopup").popup({ on: "click" }); 
@@ -1634,7 +1630,7 @@
                         outstring += "error";
                     }
                     outstring += '">';
-                    outstring += '<td>'+moment(result[i].date).utcOffset(1).format("D.M.YYYY H:mm:ss")+'</td><td>'+getSpeedDialName(result[i].source_number)+'</td><td><span class="hasPopup" data-html="<b>Podrobnosti:</b> '+result[i].destination_name+'">'+getSpeedDialName(result[i].destination_number)+'</span></td><td><span class="hasPopup" data-html="<b>Délka vyzvánění:</b> '+result[i].ringing_length+' s">'+result[i].length+' s</span></td><td><span class="hasPopup" data-html="<b>Minutová sazba:</b> '+result[i].price_per_minute+' Kč<br><b>Zbylý kredit:</b> '+result[i].balance_after+' Kč">'+result[i].price+' Kč</span></td><td>'+result[i].line+'</td></tr>';
+                    outstring += '<td>'+moment(result[i].date).utcOffset(1).format("DD.MM.YYYY H:mm:ss")+'</td><td>'+getSpeedDialName(result[i].source_number)+'</td><td><span class="hasPopup" data-html="<b>Podrobnosti:</b> '+result[i].destination_name+'">'+getSpeedDialName(result[i].destination_number)+'</span></td><td><span class="hasPopup" data-html="<b>Délka vyzvánění:</b> '+result[i].ringing_length+' s">'+result[i].length+' s</span></td><td><span class="hasPopup" data-html="<b>Minutová sazba:</b> '+result[i].price_per_minute+' Kč<br><b>Zbylý kredit:</b> '+result[i].balance_after+' Kč">'+result[i].price+' Kč</span></td><td>'+result[i].line+'</td></tr>';
                 }
             }
 
