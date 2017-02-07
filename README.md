@@ -23,6 +23,10 @@ Povolit sekci historie volání
 
     var enableCallHisory = false; // zakáže sekci historie volání
 
+Povolit sekci statistik volání
+
+    var enableStatistics = false; // zakáže sekci statistik volání
+
 >Musí být povolena alespoň jedna sekce
 
 Zamknutá čísla - čárkou oddělený seznam zkratek (klapek), které nejde editovat
