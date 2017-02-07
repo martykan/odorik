@@ -151,7 +151,7 @@
             <span style="float: right; color: #333" class="sub header" id="credit"></span>
         </h1>
         <!-- MENU -->
-        <div class="ui   secondary menu">
+        <div class="ui secondary menu">
             <!-- CATEGORY SELECTOR DROPDOWN -->
             <div class="item fitted">
                 <div class="ui blue floating button dropdown" id="categorySelector">
@@ -182,7 +182,9 @@
             }
 
             document.write('<div class="item fitted statisticsContent callHistoryContent"><div id="reportrange" class="ui button"><i class="calendar icon"></i><span></span> <i class="dropdown icon" style="margin:0"></i></div></div>')
-            
+
+            document.write('<div class="item fitted statisticsContent"><div class="ui floating button dropdown" id="statistics-line"><i class="phone icon"></i><div class="text">Všechny linky</div><i class="dropdown icon"></i><div class="menu"><div class="item" data-value="all">Všechny linky</div></div></div></div>')
+
             if (enableImportExport) {
                 document.write('<div class="item fitted speedDialsContent"><button class="ui button" onclick="importExportModal();"><i class="file archive outline icon"></i> Import/Export</button></div>');
             }
@@ -783,6 +785,8 @@
     var callHistory = [];
     var redirectedCalls = [];
 
+    var statsLine = -10;
+
     var preload = false;
 
     // Detect if user is logged in 
@@ -794,7 +798,7 @@
                 APIpass = localStorage.getItem('password');
             }
 
-            // Is the data valid?           
+            // Is the data valid?
             $.ajax({
                 url: 'https://www.odorik.cz/api/v1/lines',
                 type: 'GET',
@@ -913,7 +917,19 @@
     // Initialize dropdown with section selection
     function initDropdown(){
         var firstRun = true;
-        $('.ui.dropdown').dropdown({
+        $('.ui.dropdown').dropdown();
+        $("#statistics-line").dropdown({
+            onChange: function(value, text, $selectedItem) {
+              if(value != "all") {
+                statsLine = value;
+              }
+              else {
+                statsLine = -10;
+              }
+              loadStatistics();
+            }
+        });
+        $('#categorySelector').dropdown({
             onChange: function(value, text, $selectedItem) {
                 if(!firstRun){
                     localStorage.setItem("prevCategory", value);
@@ -1886,6 +1902,8 @@
                 for(var i = 0; i < data.length; i++){
                     $("select[name=line-filter]").append('<option value="'+data[i]+'">'+data[i]+'</option>');
                     $("select[name=call-line]").append('<option value="'+data[i]+'">'+data[i]+'</option>');
+                    // TODO here
+                    $("#statistics-line .menu").append('<div class="item" data-value="'+data[i]+'">'+data[i]+'</div>');
                 }
             }
         });
@@ -1945,6 +1963,9 @@
         from: fromDate,
         to: toDate
       };
+      if(statsLine != -10) {
+        dataSet.line = statsLine;
+      }
       $.ajax({ 
         url: 'https://www.odorik.cz/api/v1/call_statistics.json',
         type: 'GET',
