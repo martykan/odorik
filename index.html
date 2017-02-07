@@ -16,6 +16,10 @@
     // př. var enableCallHisory = false; // zakáže sekci historie volání
     var enableCallHisory = true;
 
+    // Povolit statistiky volání :: true = povolit, false = zakázat //
+    // př. var enableStatistics = false; // zakáže sekci statistiky volání
+    var enableStatistics = true;
+
     // Musí být povolena alespoň jedna kategorie
 
     // Zamknutá čísla :: čárkou oddělený seznam zkratek (klapek), které nejde editovat //
@@ -97,6 +101,7 @@
     <title>Odorik: Webová aplikace</title>
     <!-- Import of CSS libraries (Semantic UI) -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.1.4/components/button.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.1.4/components/card.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.1.4/components/container.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.1.4/components/dimmer.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.1.4/components/dropdown.min.css">
@@ -114,6 +119,7 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.1.4/components/reset.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.1.4/components/segment.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.1.4/components/site.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.1.4/components/statistic.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.1.4/components/table.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.1.4/components/transition.min.css">
     <link rel="stylesheet" type="text/css" media="all" href="https://cdn.rawgit.com/BreadMaker/semantic-ui-daterangepicker/master/daterangepicker.min.css" />
@@ -156,7 +162,10 @@
                                 document.write('<div class="item" data-value="speedDials"><i class="user icon"></i> Rychlé kontakty</div>');
                             }
                             if(enableCallHisory){
-                                document.write('<div class="item" data-value="callHistory" data-value="speedDials"><i class="history icon"></i> Výpis volání</div>');
+                                document.write('<div class="item" data-value="callHistory"><i class="history icon"></i> Výpis volání</div>');
+                            }
+                            if(enableStatistics){
+                                document.write('<div class="item" data-value="statistics"><i class="bar chart icon"></i> Statistiky volání</div>');
                             }
                         </script>
                     </div>
@@ -172,7 +181,7 @@
                 document.write('<div class="item fitted callHistoryContent"><button class="ui green button" onclick="filterModal();"><i class="filter icon"></i> Filtrovat</button></div>');
             }
 
-            document.write('<div class="item fitted callHistoryContent"><div id="reportrange" class="ui button"><i class="calendar icon"></i><span></span> <i class="dropdown icon" style="margin:0"></i></div></div>')
+            document.write('<div class="item fitted statisticsContent callHistoryContent"><div id="reportrange" class="ui button"><i class="calendar icon"></i><span></span> <i class="dropdown icon" style="margin:0"></i></div></div>')
             
             if (enableImportExport) {
                 document.write('<div class="item fitted speedDialsContent"><button class="ui button" onclick="importExportModal();"><i class="file archive outline icon"></i> Import/Export</button></div>');
@@ -233,6 +242,153 @@
                   </tr>
                 </tfoot>
             </table>
+        </div>
+        <!-- STATISTICS CONTENT -->
+        <div class="statisticsContent">
+          <div class="ui three column grid">
+              <div class="row">
+              <div class="column">
+                <div class="ui fluid card">
+                  <div class="content">
+                    <div class="header"><i class="right arrow icon"></i> Příchozí hovory</div>
+                  </div>
+                  <div class="content">
+                  <div class="ui horizontal statistics">
+                    <div class="statistic">
+                      <div class="value" id="incomingCount">
+                        0
+                      </div>
+                      <div class="label">
+                        Hovorů
+                      </div>
+                    </div>
+                    <div class="statistic">
+                      <div class="value" id="incomingLength">
+                        0
+                      </div>
+                      <div class="label">
+                        Minut
+                      </div>
+                    </div>
+                    <div class="statistic">
+                      <div class="value" id="incomingPrice">
+                        0
+                      </div>
+                      <div class="label">
+                        Kč
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              </div>
+              <div class="column">
+                <div class="ui fluid card">
+                  <div class="content">
+                    <div class="header"><i class="left arrow icon"></i> Odchozí hovory</div>
+                  </div>
+                  <div class="content">
+                  <div class="ui horizontal statistics">
+                    <div class="statistic">
+                      <div class="value" id="outgoingCount">
+                        0
+                      </div>
+                      <div class="label">
+                        Hovorů
+                      </div>
+                    </div>
+                    <div class="statistic">
+                      <div class="value" id="outgoingLength">
+                        0
+                      </div>
+                      <div class="label">
+                        Minut
+                      </div>
+                    </div>
+                    <div class="statistic">
+                      <div class="value" id="outgoingPrice">
+                        0
+                      </div>
+                      <div class="label">
+                        Kč
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              </div>
+              <div class="column">
+                <div class="ui fluid card">
+                  <div class="content">
+                    <div class="header"><i class="forward mail arrow icon"></i> Přesměrované hovory</div>
+                  </div>
+                  <div class="content">
+                  <div class="ui horizontal statistics">
+                    <div class="statistic">
+                      <div class="value" id="redirectedCount">
+                        0
+                      </div>
+                      <div class="label">
+                        Hovorů
+                      </div>
+                    </div>
+                    <div class="statistic">
+                      <div class="value" id="redirectedLength">
+                        0
+                      </div>
+                      <div class="label">
+                        Minut
+                      </div>
+                    </div>
+                    <div class="statistic">
+                      <div class="value" id="redirectedPrice">
+                        0
+                      </div>
+                      <div class="label">
+                        Kč
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            </div>
+          </div>
+
+          <div class="ui grid">
+            <div class="row">
+              <div class="eleven wide column">
+                <h3>Podle destinace</h3>
+                <table class="ui black celled table">
+                    <thead>
+                        <tr>
+                            <th>Destinace</th>
+                            <th>Počet</th>
+                            <th>Délka</th>
+                            <th>Cena</th>
+                            <th>Za minutu</th>
+                            <th>Směr</th>
+                        </tr>
+                    </thead>
+                    <tbody id="destinationStatistics">
+                    </tbody>
+                </table>
+              </div>
+              <div class="five wide column">
+                <h3>Zmeškané</h3>
+                <table class="ui red celled table">
+                    <thead>
+                        <tr>
+                            <th>Číslo</th>
+                            <th>Počet</th>
+                        </tr>
+                    </thead>
+                    <tbody id="missedStatistics">
+                    </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
         </div>
     </div>
     <!-- DELETE MODAL -->
@@ -767,7 +923,9 @@
                     }
                     if(value == "callHistory"){
                         loadCalls();
-                        console.log("loading contacts");
+                    }
+                    if(value == "statistics"){
+                        loadStatistics();
                     }
                 }
                 else {
@@ -823,14 +981,25 @@
         preload = true;
         reloadContacts();
 
-        if(enableContacts == true && enableCallHisory == false || enableContacts == true && enableCallHisory == true && localStorage.prevCategory == "speedDials") {
+        if((enableContacts && !enableCallHisory && !enableStatistics) || localStorage.prevCategory == "speedDials") {
             $(".ui.dropdown").dropdown("set selected", "speedDials");
             $(".callHistoryContent").hide();
+            $(".statisticsContent").hide();
+            $(".speedDialsContent").show();
             reloadContacts();
+        }
+        else if((enableStatistics && !enableCallHisory) || localStorage.prevCategory == "statistics") {
+            $(".ui.dropdown").dropdown("set selected", "statistics");
+            $(".callHistoryContent").hide();
+            $(".speedDialsContent").hide();
+            $(".statisticsContent").show();
+            loadStatistics();
         }
         else {
             $(".ui.dropdown").dropdown("set selected", "callHistory");
             $(".speedDialsContent").hide();
+            $(".statisticsContent").hide();
+            $(".callHistoryContent").show();
             loadCalls();
         }
     }
@@ -908,21 +1077,23 @@
                 }
                 $("#tableContacts").html(outstring);
 
-                if ($(".ui.container").css("display") == "none") {
-                    if(preload == false){
-                        $("#loadingDimmer").dimmer("hide");
-                        $("#loadingDimmer").remove();
-                        $(".ui.container").transition("fade", setDuration + "ms");
-                    }
-                    else {
-                        preload = false;
-                    }
+
+                if(preload == false){
+                  if ($(".ui.container").css("display") == "none") {
+                    $("#loadingDimmer").dimmer("hide");
+                    $("#loadingDimmer").remove();
+                    $(".ui.container").transition("fade", setDuration + "ms");
+                  }
+
+                  $('#categorySelector').removeClass("loading");
+
+                  $(".statisticsContent").hide();
+                  $(".callHistoryContent").hide();
+                  $(".speedDialsContent").show();
                 }
-
-                $('#categorySelector').removeClass("loading");
-
-                $(".callHistoryContent").hide();
-                $(".speedDialsContent").show();
+                else {
+                  preload = false;
+                }
 
                 if(enableInlineEditing){
                     $("#tableContacts td").dblclick(function(){
@@ -1428,7 +1599,12 @@
         else {
             localStorage.setItem("lastDate", start.format('DD.MM.YYYY') + ' - ' + end.format('DD.MM.YYYY'));
         }
-        loadCalls();
+        if(localStorage.prevCategory == "statistics") {
+          loadStatistics();
+        }
+        else {
+          loadCalls();
+        }
     };
 
     var optionSet = {
@@ -1536,7 +1712,7 @@
                 url: 'https://www.odorik.cz/api/v1/calls.json',
                 type: 'GET',
                 data: dataSet
-            }).done(function (data, textStatus, xhr) {                
+            }).done(function (data, textStatus, xhr) {
                 if($("select[name=call-order]").val() == "newest"){
                     try {
                         data = data.reverse();
@@ -1574,6 +1750,7 @@
                 $('#categorySelector').removeClass("loading");
 
                 $(".speedDialsContent").hide();
+                $(".statisticsContent").hide();
                 $(".callHistoryContent").show();
 
                 reloadCalls();
@@ -1738,6 +1915,96 @@
             type: 'GET',
             data: dataSet
         }).done(finishedFunction);
+    }
+
+    /*
+      STATISTICS SECTION
+    */
+
+    function loadStatistics() {
+      var formatPrice = function(input) {
+        var price = input.toFixed(3);
+        if(price > 10) {
+          price = price.toFixed(2);
+        }
+        if(Math.round(price) == price) {
+          price = Math.round(price);
+        }
+        return price;
+      };
+      var formatLength = function(input) {
+        var length = (input/60).toFixed(1);
+        if(length > 5 || Math.round(length) == length) {
+          length = Math.round(length);
+        }
+        return length;
+      };
+      var dataSet = {
+        user: APIuser,
+        password: APIpass,
+        from: fromDate,
+        to: toDate
+      };
+      $.ajax({ 
+        url: 'https://www.odorik.cz/api/v1/call_statistics.json',
+        type: 'GET',
+        data: dataSet
+      }).done(function (data, textStatus, xhr) {
+        $("#incomingCount").text(data.incoming.count);
+        $("#incomingLength").text(formatLength(data.incoming.length));
+        $("#incomingPrice").text(formatPrice(data.incoming.price));
+
+        $("#outgoingCount").text(data.outgoing.count);
+        $("#outgoingLength").text(formatLength(data.outgoing.length));
+        $("#outgoingPrice").text(formatPrice(data.outgoing.price));
+
+        $("#redirectedCount").text(data.redirected.count);
+        $("#redirectedLength").text(formatLength(data.redirected.length));
+        $("#redirectedPrice").text(formatPrice(data.redirected.price));
+      });
+
+      $.ajax({ 
+        url: 'https://www.odorik.cz/api/v1/call_statistics/by_destination.json',
+        type: 'GET',
+        data: dataSet
+      }).done(function (data, textStatus, xhr) {
+        console.log(data);
+        var outString = "";
+        for(var i = 0; i < data.length; i++) {
+          var direction = "Odchozí";
+          if(data[i].direction == "redirected") {
+            direction = "Přesměrované";
+          }
+          else if(data[i].direction == "in") {
+            direction = "Příchozí";
+          }
+          outString += "<tr><td>" + data[i].destination + "</td><td>" + data[i].count + "</td><td>" + formatLength(data[i].length) + " min</td><td>" + formatPrice(data[i].price) + " Kč</td><td>" + data[i].price_per_minute + " Kč</td><td>" + direction + "</td></tr>";
+        }
+        $("#destinationStatistics").html(outString);
+      });
+
+      $.ajax({ 
+        url: 'https://www.odorik.cz/api/v1/call_statistics/missed_calls.json',
+        type: 'GET',
+        data: dataSet
+      }).done(function (data, textStatus, xhr) {
+        console.log(data);
+        var outString = "";
+        for(var i = 0; i < data.length; i++) {
+          outString += "<tr><td>" + data[i].destination_number + "</td><td>" + data[i].count + "</td></tr>"
+        }
+        $("#missedStatistics").html(outString);
+      });
+
+      if ($(".ui.container").css("display") == "none") {
+        $("#loadingDimmer").dimmer("hide");
+        $("#loadingDimmer").remove();
+        $(".ui.container").transition("fade", setDuration + "ms");
+      }
+      $('#categorySelector').removeClass("loading");
+      $(".speedDialsContent").hide();
+      $(".callHistoryContent").hide();
+      $(".statisticsContent").show();
     }
     </script>
     <br>
