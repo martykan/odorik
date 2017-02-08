@@ -133,6 +133,11 @@
             -webkit-filter: none !important;
             filter: none !important;
         }
+        @media only screen and (max-width: 767px) {
+          .ui.menu .fitted.item {
+              padding: 0.8em 1.2em;
+          }
+        }
     </style>
   </head>
   <body>
@@ -151,7 +156,7 @@
             <span style="float: right; color: #333" class="sub header" id="credit"></span>
         </h1>
         <!-- MENU -->
-        <div class="ui secondary menu">
+        <div class="ui secondary stackable menu">
             <!-- CATEGORY SELECTOR DROPDOWN -->
             <div class="item fitted">
                 <div class="ui blue floating button dropdown" id="categorySelector">
@@ -183,7 +188,7 @@
 
             document.write('<div class="item fitted statisticsContent callHistoryContent"><div id="reportrange" class="ui button"><i class="calendar icon"></i><span></span> <i class="dropdown icon" style="margin:0"></i></div></div>')
 
-            document.write('<div class="item fitted statisticsContent"><div class="ui floating button dropdown" id="statistics-line"><i class="phone icon"></i><div class="text">Všechny linky</div><i class="dropdown icon"></i><div class="menu"><div class="item" data-value="all">Všechny linky</div></div></div></div>')
+            document.write('<div class="item fitted statisticsContent"><div class="ui floating button dropdown" id="statistics-line"><i class="phone icon"></i><div class="text">Všechny</div><i class="dropdown icon"></i><div class="menu"><div class="item" data-value="all">Všechny</div></div></div></div>')
 
             if (enableImportExport) {
                 document.write('<div class="item fitted speedDialsContent"><button class="ui button" onclick="importExportModal();"><i class="file archive outline icon"></i> Import/Export</button></div>');
@@ -247,7 +252,7 @@
         </div>
         <!-- STATISTICS CONTENT -->
         <div class="statisticsContent">
-          <div class="ui three column grid">
+          <div class="ui three column stackable grid">
               <div class="row">
               <div class="column">
                 <div class="ui fluid card">
@@ -357,7 +362,7 @@
             </div>
           </div>
 
-          <div class="ui grid">
+          <div class="ui stackable grid">
             <div class="row">
               <div class="eleven wide column">
                 <h3>Podle destinace</h3>
