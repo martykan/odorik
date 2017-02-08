@@ -1941,7 +1941,7 @@
 
     function loadStatistics() {
       var formatPrice = function(input) {
-        var price = input.toFixed(3);
+        var price = parseFloat(input.toFixed(3));
         if(price > 10) {
           price = price.toFixed(2);
         }
